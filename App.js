@@ -4,6 +4,7 @@ import ProjectApp from "./components/ProjectApp";
 import Login from "./components/Login";
 import Signin from "./components/Signin";
 import Main from "./components/Main";
+import ProjPage from "./components/ProjPage";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 
@@ -27,6 +28,8 @@ export default class App extends React.Component {
           <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="Signin" component={Signin} />
           <Stack.Screen name="ProjectApp" component={ProjectApp} />
+          <Stack.Screen name="ProjPage" component={ProjPage} />
+
         </Stack.Navigator>
       </NavigationContainer>
     );

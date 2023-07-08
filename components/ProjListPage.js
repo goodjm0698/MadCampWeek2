@@ -8,26 +8,29 @@ import {
   FlatList,
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import TextInput from "./TextInput";
 import { theme } from "../core/theme";
 import axios from "axios";
-import { ListItem } from "react-native-elements";
 
-const list = [
-  {
-    name: "Amy Farha",
-    avatar_url:
-      "https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg",
-    subtitle: "Vice President",
-  },
-  {
-    name: "Chris Jackson",
-    avatar_url:
-      "https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg",
-    subtitle: "Vice Chairman",
-  },
-  //... 추가로 리스트 아이템을 넣어주세요
+const data = [
+  { id: "1", text: "Item Title 1", tags: ["열정", "프론트", "앱"] },
+  { id: "2", text: "Item Title 2", tags: ["디자인", "UI", "UX"] },
+  { id: "3", text: "Item Title 3", tags: ["백엔드", "데이터베이스"] },
+  { id: "4", text: "Item Title 4", tags: ["테스팅", "디버깅"] },
+
+  // ... 추가 리스트 항목
 ];
+const tagColors = {
+  열정: "#FF5733",
+  프론트: "#C70039",
+  앱: "#900C3F",
+  디자인: "#581845",
+  UI: "#FFC300",
+  UX: "#FF5733",
+  백엔드: "#C70039",
+  데이터베이스: "#900C3F",
+  테스팅: "#581845",
+  디버깅: "#FFC300",
+};
 
 const ProjList = () => {
   const [todos, setTodos] = useState([]);
@@ -41,23 +44,61 @@ const ProjList = () => {
         console.error("Error:", error);
       });
   }, []);
+
   return (
-    <SafeAreaView>
-      <FlatList
-        keyExtractor={(item, index) => index.toString()}
-        data={list}
-        renderItem={({ item }) => (
-          <ListItem bottomDivider>
-            <ListItem.Content>
-              <ListItem.Title>{item.name}</ListItem.Title>
-              <ListItem.Subtitle>{item.subtitle}</ListItem.Subtitle>
-            </ListItem.Content>
-            <ListItem.Chevron />
-          </ListItem>
-        )}
-      />
-    </SafeAreaView>
+    <FlatList
+      data={data}
+      renderItem={({ item }) => (
+        <View style={styles.item}>
+          <TouchableOpacity onPress={() => {}}>
+            <Text style={styles.title}>{item.text}</Text>
+            <Text>tags</Text>
+            <View style={styles.tagContainer}>
+              {item.tags.map((tag, index) => (
+                <Text
+                  key={index}
+                  style={[styles.tag, { color: tagColors[tag] }]}
+                >
+                  {tag}
+                </Text>
+              ))}
+            </View>
+          </TouchableOpacity>
+        </View>
+      )}
+      keyExtractor={(item) => item.id}
+      numColumns={2} // 한 줄에 두 개의 항목이 표시되도록 설정
+    />
   );
 };
+
+const styles = StyleSheet.create({
+  item: {
+    flex: 1,
+    margin: 10,
+    padding: 10,
+    backgroundColor: "#f8f8f8",
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 5,
+    // 그림자 효과
+    shadowColor: "#000",
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    shadowOffset: { height: 2, width: 2 },
+  },
+  title: {
+    fontWeight: "bold", // 제목을 굵게 설정
+    marginBottom: 10, // 제목 아래에 마진 추가
+  },
+  tagContainer: {
+    flexDirection: "row", // 태그를 한 줄로 나열
+    flexWrap: "wrap", // 태그가 화면 너비를 넘어갈 경우 다음 줄로 이동
+  },
+  tag: {
+    color: "#007BFF",
+    margin: 2,
+  },
+});
 
 export default ProjList;
