@@ -1,3 +1,4 @@
+const http = require("http");
 const express = require("express");
 const bodyParser = require("body-parser");
 const mysql = require("mysql");
@@ -15,10 +16,10 @@ app.use(
 );
 
 const db = mysql.createConnection({
-  host: "127.0.0.1",
+  host: "localhost",
   user: "root",
-  password: "0000",
-  database: "todo",
+  password: "20200291",
+  database: "madmarket",
 });
 
 db.connect((err) => {
@@ -60,7 +61,7 @@ app.post("/login", (req, res) => {
   const id = req.body.id;
   const password = req.body.password;
   const sql1 =
-    "SELECT COUNT(*) AS result FROM users WHERE id = ? and password = ?";
+    "SELECT COUNT(*) AS result FROM users WHERE Username = ? and Password = ?";
   db.query(sql1, [id, password], (err, data) => {
     if (!err) {
       if (data[0].result < 1) {
