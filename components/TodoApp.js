@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TextInput, Button } from "react-native";
+import { View, Text, TextInput, Button, FlatList } from "react-native";
 import axios from "axios";
 
 const TodoApp = () => {
@@ -14,6 +14,17 @@ const TodoApp = () => {
       console.error(error);
     }
   };
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:3000/todos")
+      .then((response) => {
+        setTodos(response.data);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }, [newTodo]);
 
   return (
     <View>
