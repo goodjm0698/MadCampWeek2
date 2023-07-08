@@ -1,11 +1,12 @@
 import React from "react";
 import { StyleSheet, View, Text } from "react-native";
-import TodoApp from "./components/TodoApp";
+import ProjectApp from "./components/ProjectApp";
 import Login from "./components/Login";
 import Signin from "./components/Signin";
 import Main from "./components/Main";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
+
 
 const Stack = createStackNavigator();
 export default class App extends React.Component {
@@ -16,7 +17,7 @@ export default class App extends React.Component {
           screenOptions={{
             headerShown: false,
           }}
-          initialRouteName="Main"
+          initialRouteName="Login"
         >
           <Stack.Screen
             name="Main"
@@ -25,7 +26,7 @@ export default class App extends React.Component {
           />
           <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="Signin" component={Signin} />
-          <Stack.Screen name="TodoApp" component={TodoApp} />
+          <Stack.Screen name="ProjectApp" component={ProjectApp} />
         </Stack.Navigator>
       </NavigationContainer>
     );

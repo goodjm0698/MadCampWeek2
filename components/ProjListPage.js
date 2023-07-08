@@ -33,7 +33,7 @@ const ProjList = () => {
   const [todos, setTodos] = useState([]);
   useEffect(() => {
     axios
-      .get("http://localhost:3000/todos")
+      .get("http://localhost:3000/projects")
       .then((response) => {
         setTodos(response.data);
       })

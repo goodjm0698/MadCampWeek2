@@ -2,13 +2,13 @@ import React, { useState, useEffect } from "react";
 import { View, Text, TextInput, Button, FlatList } from "react-native";
 import axios from "axios";
 
-const TodoApp = () => {
+const ProjectApp = () => {
   const [todos, setTodos] = useState([]);
   const [newTodo, setNewTodo] = useState("");
 
   const addTodo = async () => {
     try {
-      await axios.post("http://localhost:3000/todos", { text: newTodo });
+      await axios.post("http://localhost:3000/projects", { text: newTodo });
       setNewTodo("");
     } catch (error) {
       console.error(error);
@@ -17,7 +17,7 @@ const TodoApp = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:3000/todos")
+      .get("http://localhost:3000/projects")
       .then((response) => {
         setTodos(response.data);
       })
@@ -42,4 +42,4 @@ const TodoApp = () => {
   );
 };
 
-export default TodoApp;
+export default ProjectApp;

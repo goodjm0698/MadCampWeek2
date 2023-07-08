@@ -23,7 +23,8 @@
     "react-native": "0.71.8",
     "react-native-elements": "^3.4.3",
     "react-native-paper": "^5.9.1",
-    "react-native-web": "~0.18.10"
+    "react-native-web": "~0.18.10",
+    "socket.io": "^4.7.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
