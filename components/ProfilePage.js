@@ -1,9 +1,13 @@
-import React from "react";
+import React, { Component, useState, useEffect } from "react";
 import { StyleSheet, View, Image, Text, TouchableOpacity } from "react-native";
 import { Button } from "@rneui/themed";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import { ScrollView } from "react-native";
+import { ListItem, Avatar } from "react-native-elements";
+import axios from "axios";
+
 
 const tagColors = {
   열정: "#FF5733",
@@ -19,6 +23,17 @@ const tagColors = {
 };
 
 const ProfilePage = () => {
+  const [prof, setProf] = useState([]);
+  useEffect(() => {
+    axios
+      .get("http://localhost:3000/profile")
+      .then((response) => {
+        setProf(response.data);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }, []);
   const profile = {
     name: "김재민",
     avatar:
@@ -43,10 +58,10 @@ const ProfilePage = () => {
       </View>
 
       <View style={styles.infoContainer}>
-        <Text style={styles.title}>{profile.name}</Text>
+        <Text style={styles.title}>{prof.username}</Text>
         <View style={styles.separator} />
         <View style={styles.tagContainer}>
-          {profile.tags.map((tag, index) => (
+          {(prof.tags||"").split(',').map((tag, index) => (
             <View
               style={[styles.tag, { backgroundColor: tagColors[tag] }]}
               key={index}
