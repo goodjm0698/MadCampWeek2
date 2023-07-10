@@ -1,9 +1,17 @@
 import React, { Component, useState } from "react";
-import { StyleSheet, View, TouchableOpacity, Text, Button } from "react-native";
+import {
+  StyleSheet,
+  View,
+  TouchableOpacity,
+  Text,
+  Button,
+  Image,
+} from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import TextInput from "./TextInput";
-import { theme } from "../core/theme";
+import { theme } from "./core/theme";
 import axios from "axios";
+import Logo from "./assets/Logo.png";
 
 const Login = ({ navigation }) => {
   const [id, setId] = useState("");
@@ -17,10 +25,9 @@ const Login = ({ navigation }) => {
           password: password,
         })
         .then((response) => {
-          console.log(response.data.success);
           if (response.data.success) {
             // 서버에서 로그인 성공 응답을 받으면 홈 화면으로 리다이렉트
-            navigation.navigate("TodoApp");
+            navigation.navigate("Main");
           } else {
             // 로그인 실패, 에러 메시지 표시
             alert("Invalid username or password");
@@ -33,27 +40,26 @@ const Login = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.input}>
-        <Text style={styles.header}>몰캠마켓</Text>
-        <TextInput
-          placeholder={"아이디"}
-          autoCapitalize="none"
-          returnKeyType="next"
-          onChangeText={(text) => setId(text)}
-          value={id}
-          underlineColorAndroid="#f000"
-          blurOnSubmit={false}
-        />
-        <TextInput
-          placeholder={"비밀번호"}
-          autoCapitalize="none"
-          returnKeyType="next"
-          onChangeText={(text) => setPassword(text)}
-          value={password}
-          underlineColorAndroid="#f000"
-          blurOnSubmit={false}
-        />
-      </View>
+      <Image source={Logo} style={{ width: 150, height: 150 }} />
+      <Text style={styles.header}>몰캠마켓</Text>
+      <TextInput
+        placeholder={"아이디"}
+        autoCapitalize="none"
+        returnKeyType="next"
+        onChangeText={(text) => setId(text)}
+        value={id}
+        underlineColorAndroid="#f000"
+        blurOnSubmit={false}
+      />
+      <TextInput
+        placeholder={"비밀번호"}
+        autoCapitalize="none"
+        returnKeyType="next"
+        onChangeText={(text) => setPassword(text)}
+        value={password}
+        underlineColorAndroid="#f000"
+        blurOnSubmit={false}
+      />
       <Button title="LogIn" onPress={onClickLogin} />
     </View>
   );

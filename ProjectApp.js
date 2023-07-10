@@ -1,19 +1,30 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TextInput, Button } from "react-native";
+import { View, Text, TextInput, Button, FlatList } from "react-native";
 import axios from "axios";
 
-const TodoApp = () => {
+const ProjectApp = () => {
   const [todos, setTodos] = useState([]);
   const [newTodo, setNewTodo] = useState("");
 
   const addTodo = async () => {
     try {
-      await axios.post("http://localhost:3000/todos", { text: newTodo });
+      await axios.post("http://localhost:3000/projects", { text: newTodo });
       setNewTodo("");
     } catch (error) {
       console.error(error);
     }
   };
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:3000/projects")
+      .then((response) => {
+        setTodos(response.data);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }, [newTodo]);
 
   return (
     <View>
@@ -31,4 +42,4 @@ const TodoApp = () => {
   );
 };
 
-export default TodoApp;
+export default ProjectApp;
