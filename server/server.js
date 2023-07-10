@@ -66,7 +66,7 @@ app.get("/api", (req, res) => {
 const db = mysql.createConnection({
   host: "127.0.0.1",
   user: "root",
-  password: "0000",
+  password: "20200291",
   database: "madmarket",
 });
 
@@ -95,7 +95,7 @@ app.get("/projects", (req, res) => {
         return;
       }
       res.json(results);
-      console.log("Just got the res", results);
+      //console.log("Just got the res", results);
     }
   );
 });
@@ -169,6 +169,23 @@ app.post("/signin", (req, res) => {
     }
   });
 });
+
+app.get("/profilelist", (req, res) =>{
+  db.query(
+    "SELECT users.*, GROUP_CONCAT(usertags.tag) AS tags\
+    FROM users\
+    LEFT JOIN usertags ON users.UID = usertags.UID\
+    GROUP BY users.UID",
+    (err, results) => {
+      if (err) {
+        console.error("Failed to fetch profiles from MySQL:", err);
+        res.status(500).json({ error: "Failed to fetch profiles" });
+        return;
+      }
+      res.json(results);
+    }
+  );
+})
 
 const port = 3000;
 http.listen(port, () => {
