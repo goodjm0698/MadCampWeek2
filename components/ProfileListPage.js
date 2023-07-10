@@ -11,60 +11,7 @@ import { ScrollView } from "react-native";
 import { ListItem, Avatar } from "react-native-elements";
 import axios from "axios";
 
-const users = [
-  {
-    name: "이름",
-    avatar_url:
-      "https://cdn.pixabay.com/photo/2023/06/18/04/57/crimson-collared-tanager-8071235_1280.jpg",
-    tags: ["열정", "디자인", "UI", "백엔드"],
-  },
-  {
-    name: "이름1",
-    avatar_url: "사진 URL",
-    tags: ["열정", "디자인", "UI", "백엔드"],
-  },
-  {
-    name: "이름2",
-    avatar_url: "사진 URL",
-    tags: ["열정", "디자인", "UI", "백엔드"],
-  },
-  {
-    name: "이름3",
-    avatar_url: "사진 URL",
-    tags: ["열정", "디자인", "UI", "백엔드"],
-  },
-  {
-    name: "이름4",
-    avatar_url: "사진 URL",
-    tags: ["열정", "디자인", "UI", "백엔드"],
-  },
-  {
-    name: "이름5",
-    avatar_url: "사진 URL",
-    tags: ["열정", "디자인", "UI", "백엔드"],
-  },
-
-  {
-    name: "이름5",
-    avatar_url: "사진 URL",
-    tags: ["열정", "디자인", "UI", "백엔드"],
-  },
-  {
-    name: "이름5",
-    avatar_url: "사진 URL",
-    tags: ["열정", "디자인", "UI", "백엔드"],
-  },
-  {
-    name: "이름6",
-    avatar_url: "사진 URL",
-    tags: ["열정", "디자인", "UI", "백엔드"],
-  },
-  {
-    name: "이름7",
-    avatar_url: "사진 URL",
-    tags: ["열정", "디자인", "UI", "백엔드"],
-  },
-];
+//  
 
 const tagColors = {
   열정: "#FF5733",
@@ -80,9 +27,21 @@ const tagColors = {
 };
 
 const ProfileList = () => {
+  const [profs, setProfs] = useState([]);
+  useEffect(() => {
+    axios
+      .get("http://localhost:3000/profilelist")
+      .then((response) => {
+        setProfs(response.data);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }, []);
+
   return (
     <ScrollView>
-      {users.map((user, i) => (
+      {profs.map((user, i) => (
         <ListItem key={i} bottomDivider>
           <Avatar source={{ uri: user.avatar_url }} />
           <ListItem.Content>
@@ -93,10 +52,10 @@ const ProfileList = () => {
                 fontfamily: "lucida grande",
               }}
             >
-              {user.name}
+              {user.username}
             </ListItem.Title>
             <View style={styles.tagContainer}>
-              {user.tags.map((tag, index) => (
+              {user.tags.split(',').map((tag, index) => (
                 <Text
                   key={index}
                   style={[styles.tag, { backgroundColor: tagColors[tag] }]}

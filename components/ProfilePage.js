@@ -5,6 +5,19 @@ import FontAwesome from "react-native-vector-icons/FontAwesome";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
+const tagColors = {
+  열정: "#FF5733",
+  프론트: "#C70039",
+  앱: "#900C3F",
+  디자인: "#581845",
+  UI: "#FFC300",
+  UX: "#FF5733",
+  백엔드: "#C70039",
+  데이터베이스: "#900C3F",
+  테스팅: "#581845",
+  디버깅: "#FFC300",
+};
+
 const ProfilePage = () => {
   const profile = {
     name: "김재민",
@@ -15,18 +28,6 @@ const ProfilePage = () => {
     school: "Korea Univ.",
     class: "Class 1",
     tags: ["열정", "디자인", "UI", "프론트"],
-  };
-  const tagColors = {
-    열정: "#FF5733",
-    프론트: "#C70039",
-    앱: "#900C3F",
-    디자인: "#581845",
-    UI: "#FFC300",
-    UX: "#FF5733",
-    백엔드: "#C70039",
-    데이터베이스: "#900C3F",
-    테스팅: "#581845",
-    디버깅: "#FFC300",
   };
 
   return (
