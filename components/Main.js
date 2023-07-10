@@ -10,7 +10,6 @@ import ProjPage from "./ProjPage";
 import axios from "axios";
 import ProfileList from "./ProfileListPage";
 import ProfilePage from "./ProfilePage";
-import ProfileEdit from "./ProfileEditPage";
 
 function ProfileScreen() {
   return (

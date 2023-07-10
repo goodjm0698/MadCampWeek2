@@ -8,7 +8,7 @@ import {
   FlatList,
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { theme } from "./core/theme";
+
 import axios from "axios";
 
 const data = [
@@ -54,16 +54,18 @@ const ProjList = () => {
             <Text style={styles.title}>{item.PID}</Text>
             <Text>{item.info}</Text>
             <Text>{item.username}</Text>
-            {<View style={styles.tagContainer}>
-              {item.tags.split(',').map((tag, index) => (
-                <Text
-                  key={index}
-                  style={[styles.tag, { color: tagColors[tag] }]}
-                >
-                  {tag}
-                </Text>
-              ))}
-            </View>}
+            {
+              <View style={styles.tagContainer}>
+                {item.tags.split(",").map((tag, index) => (
+                  <Text
+                    key={index}
+                    style={[styles.tag, { color: tagColors[tag] }]}
+                  >
+                    {tag}
+                  </Text>
+                ))}
+              </View>
+            }
           </TouchableOpacity>
         </View>
       )}

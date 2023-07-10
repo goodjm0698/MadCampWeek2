@@ -9,9 +9,9 @@ import {
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import TextInput from "./TextInput";
-import { theme } from "./core/theme";
+import { theme } from "../core/theme";
 import axios from "axios";
-import Logo from "./assets/Logo.png";
+import Logo from "../assets/Logo.png";
 
 const Login = ({ navigation }) => {
   const [id, setId] = useState("");

@@ -8,7 +8,7 @@ import {
   Picker,
 } from "react-native";
 import TextInput from "./TextInput";
-import { theme } from "./core/theme";
+import { theme } from "../core/theme";
 import axios from "axios";
 
 const Signin = ({ navigation }) => {

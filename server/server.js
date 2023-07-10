@@ -40,35 +40,33 @@ const http = require("http").Server(app);
 const cors = require("cors");
 app.use(cors());
 
-const socketIO = require('socket.io')(http, {
+const socketIO = require("socket.io")(http, {
   cors: {
-      origin: "<http://localhost:3000>"
-  }
+    origin: "<http://localhost:3000>",
+  },
 });
-socketIO.on('connection', (socket) => {
+socketIO.on("connection", (socket) => {
   console.log(`⚡: ${socket.id} user just connected!`);
 
-  socket.on('disconnect', () => {
-    socket.disconnect()
-    console.log('🔥: A user disconnected');
+  socket.on("disconnect", () => {
+    socket.disconnect();
+    console.log("🔥: A user disconnected");
   });
 });
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-
 app.get("/api", (req, res) => {
-    res.json({
-        message: "Hello world",
-    });
+  res.json({
+    message: "Hello world",
+  });
 });
 
-
 const db = mysql.createConnection({
-  host: "localhost",
+  host: "127.0.0.1",
   user: "root",
-  password: "20200291",
+  password: "0000",
   database: "madmarket",
 });
 
@@ -80,24 +78,26 @@ db.connect((err) => {
   console.log("Connected to MySQL database");
 });
 
-
 // 유저가 프로젝트 탭에 들어오면, 프로젝트 리스트를 display해야 함
 
 app.get("/projects", (req, res) => {
   res.header("Access-Control-Allow-Origin", "*"); // 필요한건가?
-  db.query("SELECT projects.*, users.username AS username, GROUP_CONCAT(projtags.tag) AS tags\
+  db.query(
+    "SELECT projects.*, users.username AS username, GROUP_CONCAT(projtags.tag) AS tags\
   FROM projects\
   LEFT JOIN projtags ON projects.PID = projtags.PID\
   LEFT JOIN users ON projects.UID = users.UID\
-  GROUP BY projects.PID", (err, results) => {
-    if (err) {
-      console.error("Failed to fetch projs from MySQL:", err);
-      res.status(500).json({ error: "Failed to fetch projs" });
-      return;
+  GROUP BY projects.PID",
+    (err, results) => {
+      if (err) {
+        console.error("Failed to fetch projs from MySQL:", err);
+        res.status(500).json({ error: "Failed to fetch projs" });
+        return;
+      }
+      res.json(results);
+      console.log("Just got the res", results);
     }
-     res.json(results);
-     console.log("Just got the res", results);
-  });
+  );
 });
 
 app.post("/projects", (req, res) => {
@@ -106,14 +106,18 @@ app.post("/projects", (req, res) => {
     res.status(440).json({ error: "Text field is required" });
     return;
   }
-  db.query("INSERT INTO projects (CreatorID, project_info) VALUES (1,?)", [text], (err, result) => {
-    if (err) {
-      console.error("Failed to insert todo into MySQL:", err);
-      res.status(500).json({ error: "Failed to add todo" });
-      return;
+  db.query(
+    "INSERT INTO projects (CreatorID, project_info) VALUES (1,?)",
+    [text],
+    (err, result) => {
+      if (err) {
+        console.error("Failed to insert todo into MySQL:", err);
+        res.status(500).json({ error: "Failed to add todo" });
+        return;
+      }
+      res.json({ id: result.insertId, text });
     }
-    res.json({ id: result.insertId, text });
-  });
+  );
 });
 
 app.post("/login", (req, res) => {
