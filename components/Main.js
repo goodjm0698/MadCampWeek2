@@ -6,20 +6,41 @@ import { createStackNavigator } from "@react-navigation/stack";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import ProjList from "./ProjListPage";
 import ProjPost from "./ProjPostPage";
-import ProjPage from "./ProjPage";
-import axios from "axios";
 import ProfileList from "./ProfileListPage";
 import ProfilePage from "./ProfilePage";
-
-function ProfileScreen() {
-  return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>Profile!</Text>
-    </View>
-  );
-}
+import ChatPage from "./ChatPage";
+import ChatList from "./ChatListPage";
+import ProfileEdit from "./ProfileEditPage";
 
 const Tab = createBottomTabNavigator();
+const ProfileStack = createStackNavigator();
+const ChatStack = createStackNavigator();
+const ProjStack = createStackNavigator();
+
+function ProfileNavigator() {
+  return (
+    <ProfileStack.Navigator>
+      <ProfileStack.Screen name="ProfileList" component={ProfileList} />
+      <ProfileStack.Screen name="ProfilePage" component={ProfilePage} />
+    </ProfileStack.Navigator>
+  );
+}
+function ChatNavigator() {
+  return (
+    <ChatStack.Navigator>
+      <ChatStack.Screen name="ChatList" component={ChatList} />
+      <ChatStack.Screen name="ChatPage" component={ChatPage} />
+    </ChatStack.Navigator>
+  );
+}
+function ProjNavigator() {
+  return (
+    <ProjStack.Navigator>
+      <ProjStack.Screen name="ProjList" component={ProjList} />
+      <ProjStack.Screen name="ProjPost" component={ProjPost} />
+    </ProjStack.Navigator>
+  );
+}
 
 export default function Main() {
   return (
@@ -31,7 +52,7 @@ export default function Main() {
     >
       <Tab.Screen
         name="ProjPage"
-        component={ProjPage}
+        component={ProjNavigator}
         options={{
           tabBarIcon: ({ color, size }) => (
             <Icon name="home" color={color} size={size} />
@@ -55,7 +76,7 @@ export default function Main() {
       />
       <Tab.Screen
         name="chat"
-        component={ProfileList}
+        component={ChatNavigator}
         options={{
           title: "채팅",
           tabBarIcon: ({ color, size }) => (
@@ -80,7 +101,7 @@ export default function Main() {
       />
       <Tab.Screen
         name="Profile"
-        component={ProfilePage}
+        component={ProfileNavigator}
         options={{
           title: "프로필",
           tabBarIcon: ({ color, size }) => (

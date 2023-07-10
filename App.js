@@ -4,7 +4,6 @@ import ProjectApp from "./components/ProjectApp";
 import Login from "./components/Login";
 import Signin from "./components/Signin";
 import Main from "./components/Main";
-import ProjPage from "./components/ProjPage";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import io from "socket.io-client"; // 소켓 클라이언트 라이브러리 임포트
@@ -20,7 +19,7 @@ export default class App extends React.Component {
           screenOptions={{
             headerShown: false,
           }}
-          initialRouteName="Login"
+          initialRouteName="Main"
         >
           <Stack.Screen
             name="Main"
@@ -30,24 +29,8 @@ export default class App extends React.Component {
           <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="Signin" component={Signin} />
           <Stack.Screen name="ProjectApp" component={ProjectApp} />
-          <Stack.Screen name="ProjPage" component={ProjPage} />
         </Stack.Navigator>
       </NavigationContainer>
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    flexDirection: "column",
-    paddingTop: 50,
-    backgroundColor: "#EEE",
-  },
-  title: {
-    fontWeight: "800",
-    fontSize: 30,
-    marginLeft: 20,
-    marginBottom: 20,
-  },
-});

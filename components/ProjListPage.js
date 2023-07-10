@@ -32,7 +32,7 @@ const tagColors = {
   디버깅: "#FFC300",
 };
 
-const ProjList = () => {
+const ProjList = ({ navigation }) => {
   const [projs, setProjs] = useState([]);
   useEffect(() => {
     axios
@@ -50,7 +50,7 @@ const ProjList = () => {
       data={projs}
       renderItem={({ item }) => (
         <View style={styles.item}>
-          <TouchableOpacity onPress={() => {}}>
+          <TouchableOpacity onPress={() => navigation.navigate("ProjPost")}>
             <Text style={styles.title}>{item.PID}</Text>
             <Text>{item.info}</Text>
             <Text>{item.username}</Text>

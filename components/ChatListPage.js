@@ -10,7 +10,6 @@ import {
 import { ScrollView } from "react-native";
 import { ListItem, Avatar } from "react-native-elements";
 import axios from "axios";
-import ProfilePage from "./ProfilePage";
 
 const users = [
   {
@@ -80,14 +79,14 @@ const tagColors = {
   디버깅: "#FFC300",
 };
 
-const ProfileList = ({ navigation }) => {
+const ChatList = ({ navigation }) => {
   return (
     <ScrollView>
       {users.map((user, i) => (
         <ListItem
           key={i}
           bottomDivider
-          onPress={() => navigation.navigate("ProfilePage")}
+          onPress={() => navigation.navigate("ChatPage")}
         >
           <Avatar source={{ uri: user.avatar_url }} />
           <ListItem.Content>
@@ -99,16 +98,7 @@ const ProfileList = ({ navigation }) => {
             >
               {user.name}
             </ListItem.Title>
-            <View style={styles.tagContainer}>
-              {user.tags.map((tag, index) => (
-                <Text
-                  key={index}
-                  style={[styles.tag, { backgroundColor: tagColors[tag] }]}
-                >
-                  {tag}
-                </Text>
-              ))}
-            </View>
+            <ListItem.Subtitle>subtitle</ListItem.Subtitle>
           </ListItem.Content>
         </ListItem>
       ))}
@@ -150,4 +140,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ProfileList;
+export default ChatList;
