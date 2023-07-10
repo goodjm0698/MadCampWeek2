@@ -8,7 +8,7 @@ import {
   FlatList,
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { theme } from "../core/theme";
+import { theme } from "./core/theme";
 import axios from "axios";
 
 const data = [
@@ -16,7 +16,7 @@ const data = [
   { id: "2", text: "Item Title 2", tags: ["디자인", "UI", "UX"] },
   { id: "3", text: "Item Title 3", tags: ["백엔드", "데이터베이스"] },
   { id: "4", text: "Item Title 4", tags: ["테스팅", "디버깅"] },
-
+  // ProjectID: bigint, CreatorID: bigint, tags 는 없
   // ... 추가 리스트 항목
 ];
 const tagColors = {
@@ -33,12 +33,12 @@ const tagColors = {
 };
 
 const ProjList = () => {
-  const [todos, setTodos] = useState([]);
+  const [projs, setProjs] = useState([]);
   useEffect(() => {
     axios
       .get("http://localhost:3000/projects")
       .then((response) => {
-        setTodos(response.data);
+        setProjs(response.data);
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -47,14 +47,15 @@ const ProjList = () => {
 
   return (
     <FlatList
-      data={data}
+      data={projs}
       renderItem={({ item }) => (
         <View style={styles.item}>
           <TouchableOpacity onPress={() => {}}>
-            <Text style={styles.title}>{item.text}</Text>
-            <Text>tags</Text>
-            <View style={styles.tagContainer}>
-              {item.tags.map((tag, index) => (
+            <Text style={styles.title}>{item.PID}</Text>
+            <Text>{item.info}</Text>
+            <Text>{item.username}</Text>
+            {<View style={styles.tagContainer}>
+              {item.tags.split(',').map((tag, index) => (
                 <Text
                   key={index}
                   style={[styles.tag, { color: tagColors[tag] }]}
@@ -62,7 +63,7 @@ const ProjList = () => {
                   {tag}
                 </Text>
               ))}
-            </View>
+            </View>}
           </TouchableOpacity>
         </View>
       )}

@@ -9,9 +9,9 @@ import {
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import TextInput from "./TextInput";
-import { theme } from "../core/theme";
+import { theme } from "./core/theme";
 import axios from "axios";
-import Logo from "../assets/Logo.png";
+import Logo from "./assets/Logo.png";
 
 const Login = ({ navigation }) => {
   const [id, setId] = useState("");
@@ -27,7 +27,7 @@ const Login = ({ navigation }) => {
         .then((response) => {
           if (response.data.success) {
             // 서버에서 로그인 성공 응답을 받으면 홈 화면으로 리다이렉트
-            navigation.navigate("ProjectApp");
+            navigation.navigate("Main");
           } else {
             // 로그인 실패, 에러 메시지 표시
             alert("Invalid username or password");

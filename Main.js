@@ -37,7 +37,7 @@ export default function Main() {
           headerTitle: (props) => (
             <Image
               style={{ width: 50, height: 50 }}
-              source={require("../assets/Logo.png")}
+              source={require("./assets/Logo.png")}
             />
           ),
         }}
