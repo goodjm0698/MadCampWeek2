@@ -34,7 +34,6 @@ const mysql = require("mysql");
 
 const express = require("express");
 const app = express();
-const PORT = 4000;
 
 const http = require("http").Server(app);
 const cors = require("cors");
@@ -57,11 +56,44 @@ socketIO.on("connection", (socket) => {
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.get("/api", (req, res) => {
-  res.json({
-    message: "Hello world",
-  });
-});
+let chatRooms = [
+  {
+    id: "1",
+    name: "Novu Hangouts",
+    messages: [
+      {
+        id: "1a",
+        text: "Hello guys, welcome!",
+        time: "07:50",
+        user: "Tomer",
+      },
+      {
+        id: "1b",
+        text: "Hi Tomer, thank you! 😇",
+        time: "08:50",
+        user: "David",
+      },
+    ],
+  },
+  {
+    id: "2",
+    name: "Hacksquad Team 1",
+    messages: [
+      {
+        id: "2a",
+        text: "Guys, who's awake? 🙏🏽",
+        time: "12:50",
+        user: "Team Leader",
+      },
+      {
+        id: "2b",
+        text: "What's up? 🧑🏻‍💻",
+        time: "03:50",
+        user: "Victoria",
+      },
+    ],
+  },
+];
 
 const db = mysql.createConnection({
   host: "127.0.0.1",
@@ -95,7 +127,7 @@ app.get("/projects", (req, res) => {
         return;
       }
       res.json(results);
-      console.log("Just got the res", results);
+      //console.log("Just got the res", results);
     }
   );
 });
@@ -123,16 +155,16 @@ app.post("/projects", (req, res) => {
 app.post("/login", (req, res) => {
   const id = req.body.id;
   const password = req.body.password;
-  const sql1 =
-    "SELECT COUNT(*) AS result FROM users WHERE username = ? and PW = ?";
+  const sql1 = "SELECT * FROM users WHERE username = ? and PW = ?";
   db.query(sql1, [id, password], (err, data) => {
     if (!err) {
-      if (data[0].result < 1) {
+      if (data.length < 1) {
         console.log("error");
         res.json({ success: false });
       } else {
-        console.log("match");
-        res.json({ success: true });
+        const UID = data[0].UID;
+        console.log(data);
+        res.json({ success: true, UID: UID });
       }
     } else {
       res.send(err);
@@ -142,22 +174,22 @@ app.post("/login", (req, res) => {
 });
 
 app.post("/signin", (req, res) => {
-  const id = req.body.id;
+  const username = req.body.id;
   const password = req.body.password;
   const sex = req.body.sex;
   const selectedOption = req.body.selectedOption;
-  console.log(id, password, sex, selectedOption);
-  const sql = "select count(*) as result from users where id = ?;";
-  db.query(sql, [id], (err, data) => {
+  console.log(username, password, sex, selectedOption);
+  const sql = "select count(*) as result from users where username = ?;";
+  db.query(sql, [username], (err, data) => {
     if (!err) {
       if (data[0].result >= 1) {
         console.log("collison");
       } else {
         console.log(data[0].result);
         db.query(
-          "INSERT INTO users VALUES(? , ?);",
-          [id, password],
-          (err, results) => {
+          "INSERT INTO users (username, PW) VALUES (?, ?);",
+          [username, password],
+          (err, res) => {
             if (err) {
               console.error("Failed to insert todo into MySQL:", err);
               res.status(500).json({ error: "Failed to add todo" });
@@ -168,6 +200,49 @@ app.post("/signin", (req, res) => {
       }
     }
   });
+});
+
+app.get("/profilelist", (req, res) => {
+  db.query(
+    "SELECT users.*, GROUP_CONCAT(usertags.tag) AS tags\
+    FROM users\
+    LEFT JOIN usertags ON users.UID = usertags.UID\
+    GROUP BY users.UID",
+    (err, results) => {
+      if (err) {
+        console.error("Failed to fetch profiles from MySQL:", err);
+        res.status(500).json({ error: "Failed to fetch profiles" });
+        return;
+      }
+      res.json(results);
+    }
+  );
+});
+
+app.get("/profile", (req, res) => {
+  const UID = 1;
+  db.query(
+    "SELECT users.*, GROUP_CONCAT(usertags.tag) AS tags \
+    FROM users \
+    LEFT JOIN usertags ON users.UID = usertags.UID \
+    WHERE users.UID = ? \
+    GROUP BY users.UID",
+    [UID],
+    (err, results) => {
+      if (err) {
+        console.error("Failed to fetch your profiles from MySQL:", err);
+        res.status(500).json({ error: "Failed to fetch your profile" });
+        return;
+      }
+      // console.log(results);
+      // console.log(results[0].tags.split(','));
+      res.json(results[0]);
+    }
+  );
+});
+
+app.get("/api", (req, res) => {
+  res.json(chatRooms);
 });
 
 const port = 3000;

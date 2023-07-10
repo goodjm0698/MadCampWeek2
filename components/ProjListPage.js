@@ -11,14 +11,6 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import axios from "axios";
 
-const data = [
-  { id: "1", text: "Item Title 1", tags: ["열정", "프론트", "앱"] },
-  { id: "2", text: "Item Title 2", tags: ["디자인", "UI", "UX"] },
-  { id: "3", text: "Item Title 3", tags: ["백엔드", "데이터베이스"] },
-  { id: "4", text: "Item Title 4", tags: ["테스팅", "디버깅"] },
-  // ProjectID: bigint, CreatorID: bigint, tags 는 없
-  // ... 추가 리스트 항목
-];
 const tagColors = {
   열정: "#FF5733",
   프론트: "#C70039",

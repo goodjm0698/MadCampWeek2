@@ -6,6 +6,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import ProjList from "./ProjListPage";
 import ProjPost from "./ProjPostPage";
+import axios from "axios";
 import ProfileList from "./ProfileListPage";
 import ProfilePage from "./ProfilePage";
 import ChatPage from "./ChatPage";
@@ -22,6 +23,7 @@ function ProfileNavigator() {
     <ProfileStack.Navigator>
       <ProfileStack.Screen name="ProfileList" component={ProfileList} />
       <ProfileStack.Screen name="ProfilePage" component={ProfilePage} />
+      <ProfileStack.Screen name="ProfileEdit" component={ProfileEdit} />
     </ProfileStack.Navigator>
   );
 }
