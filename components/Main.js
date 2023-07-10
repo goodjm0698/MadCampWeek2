@@ -8,7 +8,7 @@ import ProjList from "./ProjListPage";
 import ProjPost from "./ProjPostPage";
 import ProjPage from "./ProjPage";
 import axios from "axios";
-import ProfileList from "./ProfileListPage";
+import ProfileListPage from "./ProfileListPage";
 import ProfilePage from "./ProfilePage";
 
 function ProfileScreen() {
@@ -55,7 +55,7 @@ export default function Main() {
       />
       <Tab.Screen
         name="chat"
-        component={ProfileList}
+        component={ProfileListPage}
         options={{
           title: "채팅",
           tabBarIcon: ({ color, size }) => (

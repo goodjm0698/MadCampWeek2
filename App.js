@@ -5,6 +5,12 @@ import Login from "./components/Login";
 import Signin from "./components/Signin";
 import Main from "./components/Main";
 import ProjPage from "./components/ProjPage";
+import ProjListPage from "./components/ProjListPage";
+import ProjPostPage from "./components/ProjPostPage";
+import ProfileEditPage from "./components/ProfileEditPage";
+import Chat from "./components/Chat";
+
+
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import io from "socket.io-client"; // 소켓 클라이언트 라이브러리 임포트
@@ -20,7 +26,7 @@ export default class App extends React.Component {
           screenOptions={{
             headerShown: false,
           }}
-          initialRouteName="Login"
+          initialRouteName="Chat"
         >
           <Stack.Screen
             name="Main"
@@ -30,7 +36,10 @@ export default class App extends React.Component {
           <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="Signin" component={Signin} />
           <Stack.Screen name="ProjectApp" component={ProjectApp} />
-          <Stack.Screen name="ProjPage" component={ProjPage} />
+          <Stack.Screen name="ProjListPage" component={ProjListPage} />
+          <Stack.Screen name="ProjPostPage" component={ProjPostPage} />
+          <Stack.Screen name="ProfileEditPage" component={ProfileEditPage} />
+          <Stack.Screen name="Chat" component={Chat} />
         </Stack.Navigator>
       </NavigationContainer>
     );

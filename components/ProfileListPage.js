@@ -55,7 +55,7 @@ const ProfileList = () => {
               {user.username}
             </ListItem.Title>
             <View style={styles.tagContainer}>
-              {user.tags.split(',').map((tag, index) => (
+              {(user.tags||"").split(',').map((tag, index) => (
                 <Text
                   key={index}
                   style={[styles.tag, { backgroundColor: tagColors[tag] }]}
