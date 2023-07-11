@@ -13,15 +13,12 @@ import axios from "axios";
 
 const tagColors = {
   열정: "#FF5733",
+  공부: "#0E0F37",
   프론트: "#C70039",
+  백: "#0A3711",
   앱: "#900C3F",
-  디자인: "#581845",
-  UI: "#FFC300",
-  UX: "#FF5733",
-  백엔드: "#C70039",
-  데이터베이스: "#900C3F",
-  테스팅: "#581845",
-  디버깅: "#FFC300",
+  웹: "#FFC300",
+  게임: "#71269c",
 };
 
 const ProjList = ({ navigation }) => {
@@ -51,7 +48,7 @@ const ProjList = ({ navigation }) => {
                 {item.tags.split(",").map((tag, index) => (
                   <Text
                     key={index}
-                    style={[styles.tag, { color: tagColors[tag] }]}
+                    style={[styles.tag, { backgroundColor: tagColors[tag] }]}
                   >
                     {tag}
                   </Text>
@@ -71,7 +68,7 @@ const styles = StyleSheet.create({
   item: {
     flex: 1,
     margin: 10,
-    padding: 10,
+    padding: 5,
     backgroundColor: "#f8f8f8",
     justifyContent: "center",
     alignItems: "center",
@@ -91,8 +88,12 @@ const styles = StyleSheet.create({
     flexWrap: "wrap", // 태그가 화면 너비를 넘어갈 경우 다음 줄로 이동
   },
   tag: {
-    color: "#007BFF",
-    margin: 2,
+    padding: 5,
+    backgroundColor: "#007BFF",
+    borderRadius: 10,
+    margin: 5,
+    color: "white",
+    fontSize: 10,
   },
 });
 
