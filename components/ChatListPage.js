@@ -1,4 +1,4 @@
-import React, { Component, useState, useEffect } from "react";
+import React, { Component, useState, useEffect, useLayoutEffect } from "react";
 import {
   StyleSheet,
   View,
@@ -10,59 +10,14 @@ import {
 import { ScrollView } from "react-native";
 import { ListItem, Avatar } from "react-native-elements";
 import axios from "axios";
+import socket from "../utils/socket";
 
 const users = [
   {
     name: "이름",
     avatar_url:
       "https://cdn.pixabay.com/photo/2023/06/18/04/57/crimson-collared-tanager-8071235_1280.jpg",
-    tags: ["열정", "디자인", "UI", "백엔드"],
-  },
-  {
-    name: "이름1",
-    avatar_url: "사진 URL",
-    tags: ["열정", "디자인", "UI", "백엔드"],
-  },
-  {
-    name: "이름2",
-    avatar_url: "사진 URL",
-    tags: ["열정", "디자인", "UI", "백엔드"],
-  },
-  {
-    name: "이름3",
-    avatar_url: "사진 URL",
-    tags: ["열정", "디자인", "UI", "백엔드"],
-  },
-  {
-    name: "이름4",
-    avatar_url: "사진 URL",
-    tags: ["열정", "디자인", "UI", "백엔드"],
-  },
-  {
-    name: "이름5",
-    avatar_url: "사진 URL",
-    tags: ["열정", "디자인", "UI", "백엔드"],
-  },
-
-  {
-    name: "이름5",
-    avatar_url: "사진 URL",
-    tags: ["열정", "디자인", "UI", "백엔드"],
-  },
-  {
-    name: "이름5",
-    avatar_url: "사진 URL",
-    tags: ["열정", "디자인", "UI", "백엔드"],
-  },
-  {
-    name: "이름6",
-    avatar_url: "사진 URL",
-    tags: ["열정", "디자인", "UI", "백엔드"],
-  },
-  {
-    name: "이름7",
-    avatar_url: "사진 URL",
-    tags: ["열정", "디자인", "UI", "백엔드"],
+    messages: ["", "디자인", "UI", "백엔드"],
   },
 ];
 
@@ -77,15 +32,33 @@ const tagColors = {
 };
 
 const ChatList = ({ navigation }) => {
+  const [rooms, setRooms] = useState([]);
+
+  useLayoutEffect(() => {
+		function fetchGroups() {
+			fetch("http://localhost:3000/api")
+				.then((res) => res.json())
+				.then((data) => setRooms(data))
+				.catch((err) => console.error(err));
+		}
+		fetchGroups();
+	}, []);
+
+	useEffect(() => {
+		socket.on("roomsList", (rooms) => {
+			setRooms(rooms);
+		});
+	}, [socket]);
+
   return (
     <ScrollView>
-      {users.map((user, i) => (
+      {rooms.map((room, i) => (
         <ListItem
           key={i}
           bottomDivider
           onPress={() => navigation.navigate("ChatPage")}
         >
-          <Avatar source={{ uri: user.avatar_url }} />
+          {/* <Avatar source={{ uri: user.avatar_url }} /> */}
           <ListItem.Content>
             <ListItem.Title
               style={{
@@ -93,9 +66,9 @@ const ChatList = ({ navigation }) => {
                 fontWeight: "bold",
               }}
             >
-              {user.name}
+              {room.name}
             </ListItem.Title>
-            <ListItem.Subtitle>subtitle</ListItem.Subtitle>
+            <ListItem.Subtitle>{room.messages[room.messages.length - 1].text}</ListItem.Subtitle>
           </ListItem.Content>
         </ListItem>
       ))}

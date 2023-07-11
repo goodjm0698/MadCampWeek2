@@ -58,12 +58,41 @@ const socketIO = require("socket.io")(http, {
     origin: "<http://localhost:3000>",
   },
 });
-socketIO.on("connection", (socket) => {
+
+socketIO.on('connection', (socket) => {
   console.log(`⚡: ${socket.id} user just connected!`);
 
-  socket.on("disconnect", () => {
+  socket.on("createRoom", (name) => {
+		socket.join(name);
+		//chatRooms.unshift({ id: generateID(), name, messages: [] }); // db로 연결
+		socket.emit("roomsList", chatRooms);
+	});
+
+	socket.on("findRoom", (id) => {
+		let result = chatRooms.filter((room) => room.id == id); // db query
+		socket.emit("foundRoom", result[0].messages);
+	});
+
+  socket.on("newMessage", (data) => {
+		// const { room_id, message, user, timestamp } = data;
+		// let result = chatRooms.filter((room) => room.id == room_id); // db query
+		// const newMessage = {
+		// 	id: room_id,
+		// 	text: message,
+		// 	user,
+		// 	time: `${timestamp.hour}:${timestamp.mins}`,
+		// };
+		console.log("New Message", data);
+		//socket.to(result[0].name).emit("roomMessage", newMessage);
+		//result[0].messages.push(newMessage);
+
+	  //socket.emit("roomsList", chatRooms);
+		//socket.emit("foundRoom", result[0].messages);
+	});
+
+  socket.on('disconnect', () => {
     socket.disconnect();
-    console.log("🔥: A user disconnected");
+    console.log('🔥: A user disconnected');
   });
 });
 
@@ -73,7 +102,7 @@ app.use(express.json());
 const db = mysql.createConnection({
   host: "127.0.0.1",
   user: "root",
-  password: "0000",
+  password: "20200291",
   database: "madmarket",
 });
 
@@ -138,7 +167,6 @@ app.post("/login", (req, res) => {
         res.json({ success: false });
       } else {
         const UID = data[0].UID;
-        console.log(data);
         res.json({ success: true, UID: UID });
       }
     } else {
@@ -173,7 +201,6 @@ app.post("/signin", (req, res) => {
       if (data[0].result >= 1) {
         console.log("collison");
       } else {
-        console.log(data[0].result);
         db.query(
           "INSERT INTO users (username, PW) VALUES (?, ?);",
           [username, password],

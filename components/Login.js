@@ -1,4 +1,4 @@
-import React, { Component, useState } from "react";
+import React, { Component, useState, useEffect } from "react";
 import {
   StyleSheet,
   View,
@@ -11,10 +11,17 @@ import { Button } from "react-native-elements";
 import { theme } from "../core/theme";
 import axios from "axios";
 import Logo from "../assets/Logo.png";
+import socket from "../utils/socket"; // 소켓 클라이언트 라이브러리 임포트
+
+//const socket = io("http://localhost:3000", { transports: ["websocket"] }); // 소켓 클라이언트 객체 생성 및 서버 주소 설정
 
 const Login = ({ navigation }) => {
   const [id, setId] = useState("");
   const [password, setPassword] = useState("");
+
+  const handleLogin = (UID) => {
+    socket["UID"] = UID;
+  }
 
   const onClickLogin = async () => {
     try {
@@ -26,7 +33,9 @@ const Login = ({ navigation }) => {
         .then((response) => {
           if (response.data.success) {
             // 서버에서 로그인 성공 응답을 받으면 홈 화면으로 리다이렉트
-            console.log(response.data.UID);
+            //console.log(response.data.UID);
+            handleLogin(response.data.UID);
+            //socket.emit("login", { UID: response.data.UID }); // 소켓의 username 설정
             navigation.navigate("Main");
           } else {
             // 로그인 실패, 에러 메시지 표시
