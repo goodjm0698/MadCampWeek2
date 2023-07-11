@@ -2,9 +2,11 @@ import { View, Text } from "react-native";
 import React from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { styles } from "../utils/styles";
+import socket from "../utils/socket";
 
-export default function ChatComponent({ item, user }) {
-    const status = item.user !== user;
+export default function ChatComponent({ item }) {
+    const UID = socket.UID;
+    const status = item.user !== UID;
 
     return (
         <View>
