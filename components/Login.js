@@ -19,7 +19,7 @@ const Login = ({ navigation }) => {
   const onClickLogin = async () => {
     try {
       await axios
-        .post("http://localhost:3000/login", {
+        .post("http://172.10.5.90:443/login", {
           id: id,
           password: password,
         })

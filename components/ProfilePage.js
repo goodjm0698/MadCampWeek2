@@ -18,13 +18,19 @@ const tagColors = {
   게임: "#71269c",
 };
 
-const ProfilePage = ({ navigation }) => {
+const ProfilePage = ({ navigation, route }) => {
   const [prof, setProf] = useState([]);
+  const { user } = route.params;
+  console.log(user.UID);
   useEffect(() => {
     axios
-      .get("http://localhost:3000/profile")
+      .get(
+        "http://172.10.5.90:443/profile",
+        { params: { UID: user.UID } },
+        { withCredentials: true }
+      )
       .then((response) => {
-        setProf(response.data);
+        setProf(response.data[0]);
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -40,6 +46,8 @@ const ProfilePage = ({ navigation }) => {
     class: "Class 1",
     tags: ["열정", "디자인", "UI", "프론트"],
   };
+
+  console.log(prof);
 
   return (
     <View style={styles.container}>
@@ -74,7 +82,7 @@ const ProfilePage = ({ navigation }) => {
             color="#000"
             style={{ marginHorizontal: 10 }}
           />
-          <Text style={styles.info}>Age: {profile.age}</Text>
+          <Text style={styles.info}>Age: {prof.age}</Text>
         </View>
         <View style={styles.separator} />
         <View style={{ flexDirection: "row" }}>
@@ -84,7 +92,7 @@ const ProfilePage = ({ navigation }) => {
             color="#000"
             style={{ marginHorizontal: 10 }}
           />
-          <Text style={styles.info}>Gender: {profile.gender}</Text>
+          <Text style={styles.info}>Gender: {prof.gender}</Text>
         </View>
         <View style={styles.separator} />
         <View style={{ flexDirection: "row" }}>
@@ -94,7 +102,7 @@ const ProfilePage = ({ navigation }) => {
             color="#000"
             style={{ marginHorizontal: 10 }}
           />
-          <Text style={styles.info}>{profile.school}</Text>
+          <Text style={styles.info}>School:{prof.school}</Text>
         </View>
         <View style={styles.separator} />
         <View style={{ flexDirection: "row" }}>
@@ -104,7 +112,7 @@ const ProfilePage = ({ navigation }) => {
             color="#000"
             style={{ marginHorizontal: 10 }}
           />
-          <Text style={styles.info}>Class: {profile.class}</Text>
+          <Text style={styles.info}>Class: {prof.class}</Text>
         </View>
       </View>
       <Button color="warning" title="1대1 채팅방" />

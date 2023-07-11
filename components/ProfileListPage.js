@@ -15,9 +15,9 @@ import axios from "axios";
 
 const tagColors = {
   열정: "#FF5733",
-  공부: "#FF5733",
+  공부: "#0E0F37",
   프론트: "#C70039",
-  백: "#C70039",
+  백: "#0A3711",
   앱: "#900C3F",
   웹: "#FFC300",
   게임: "#71269c",
@@ -27,7 +27,7 @@ const ProfileList = ({ navigation }) => {
   const [profs, setProfs] = useState([]);
   useEffect(() => {
     axios
-      .get("http://localhost:3000/profilelist")
+      .get("http://172.10.5.90:443/profilelist")
       .then((response) => {
         setProfs(response.data);
       })
@@ -42,7 +42,7 @@ const ProfileList = ({ navigation }) => {
         <ListItem
           key={i}
           bottomDivider
-          onPress={() => navigation.navigate("ProfilePage")}
+          onPress={() => navigation.navigate("ProfilePage", { user })}
         >
           <Avatar source={{ uri: user.avatar_url }} />
           <ListItem.Content>

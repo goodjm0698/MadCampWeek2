@@ -233,7 +233,7 @@ app.get("/api", (req, res) => {
   res.json(chatRooms);
 });
 
-const port = 3000;
+const port = 443;
 http.listen(port, () => {
   console.log(`Server is listening on port ${port}`);
 });
