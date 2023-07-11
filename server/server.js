@@ -1,7 +1,6 @@
 // const express = require("express");
 const bodyParser = require("body-parser");
 const mysql = require("mysql");
-// const cors = require("cors");
 
 // const { createServer } = require("http");
 // const { Server } = require("socket.io");
@@ -37,8 +36,23 @@ const app = express();
 
 const http = require("http").Server(app);
 const cors = require("cors");
-app.use(cors());
-
+//app.use(cors());
+// app.use(
+//   cors({
+//     origin: "*", // 출처 허용 옵션
+//     credentials: true, // 응답 헤더에 Access-Control-Allow-Credentials 추가
+//     optionsSuccessStatus: 200, // 응답 상태 200으로 설정
+//   })
+// );
+app.use(function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+  next();
+});
 const socketIO = require("socket.io")(http, {
   cors: {
     origin: "<http://localhost:3000>",
@@ -55,45 +69,6 @@ socketIO.on("connection", (socket) => {
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-
-let chatRooms = [
-  {
-    id: "1",
-    name: "Novu Hangouts",
-    messages: [
-      {
-        id: "1a",
-        text: "Hello guys, welcome!",
-        time: "07:50",
-        user: "Tomer",
-      },
-      {
-        id: "1b",
-        text: "Hi Tomer, thank you! 😇",
-        time: "08:50",
-        user: "David",
-      },
-    ],
-  },
-  {
-    id: "2",
-    name: "Hacksquad Team 1",
-    messages: [
-      {
-        id: "2a",
-        text: "Guys, who's awake? 🙏🏽",
-        time: "12:50",
-        user: "Team Leader",
-      },
-      {
-        id: "2b",
-        text: "What's up? 🧑🏻‍💻",
-        time: "03:50",
-        user: "Victoria",
-      },
-    ],
-  },
-];
 
 const db = mysql.createConnection({
   host: "127.0.0.1",
@@ -177,8 +152,21 @@ app.post("/signin", (req, res) => {
   const username = req.body.id;
   const password = req.body.password;
   const sex = req.body.sex;
-  const selectedOption = req.body.selectedOption;
-  console.log(username, password, sex, selectedOption);
+  const name = req.body.name;
+  const age = req.body.age;
+  const school = req.body.school;
+  const selectedValue = req.body.selectedValue;
+  const selectedTags = req.body.selectedTags;
+  console.log(
+    username,
+    password,
+    sex,
+    age,
+    name,
+    school,
+    selectedValue,
+    selectedTags
+  );
   const sql = "select count(*) as result from users where username = ?;";
   db.query(sql, [username], (err, data) => {
     if (!err) {

@@ -4,11 +4,10 @@ import {
   View,
   TouchableOpacity,
   Text,
-  Button,
   Image,
+  TextInput,
 } from "react-native";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import TextInput from "./TextInput";
+import { Button } from "react-native-elements";
 import { theme } from "../core/theme";
 import axios from "axios";
 import Logo from "../assets/Logo.png";
@@ -42,15 +41,14 @@ const Login = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Image source={Logo} style={{ width: 150, height: 150 }} />
-      <Text style={styles.header}>몰캠마켓</Text>
+      <Text style={styles.header}>몰 캠{"\n"}마 켓</Text>
       <TextInput
         placeholder={"아이디"}
         autoCapitalize="none"
         returnKeyType="next"
         onChangeText={(text) => setId(text)}
         value={id}
-        underlineColorAndroid="#f000"
-        blurOnSubmit={false}
+        style={styles.input}
       />
       <TextInput
         placeholder={"비밀번호"}
@@ -58,10 +56,26 @@ const Login = ({ navigation }) => {
         returnKeyType="next"
         onChangeText={(text) => setPassword(text)}
         value={password}
-        underlineColorAndroid="#f000"
-        blurOnSubmit={false}
+        style={styles.input}
       />
-      <Button title="LogIn" onPress={onClickLogin} />
+      <Button
+        buttonStyle={{
+          backgroundColor: theme.colors.primary, // 주황색 배경
+          borderRadius: 15, // 둥근 모서리
+          paddingVertical: 10, // 상하 패딩
+          paddingHorizontal: 20, // 좌우 패딩
+        }}
+        titleStyle={{
+          color: "#fff", // 텍스트 색상을 흰색으로
+          fontSize: 16, // 텍스트 크기
+          fontWeight: "bold", // 볼드체
+        }}
+        containerStyle={{
+          marginVertical: 10, // 버튼 사이 간격
+        }}
+        title="로그인"
+        onPress={onClickLogin}
+      />
     </View>
   );
 };
@@ -74,20 +88,22 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     alignItems: "center",
     justifyContent: "center",
+    backgroundColor: "white",
   },
   input: {
-    borderRadius: 10,
-    backgroundColor: "#FFF",
-    paddingLeft: 10,
-    paddingRight: 10,
-    alignItems: "center",
-    flexDirection: "column",
+    width: "75%",
+    height: 40,
+    borderColor: theme.colors.primary, // 주황색 테두리
+    borderBottomWidth: 1.5,
+    padding: 10, // 텍스트와 테두리 사이의 여백
+    fontSize: 16,
+    marginVertical: 5,
   },
   inputText: {
     flex: 1,
   },
   header: {
-    fontSize: 21,
+    fontSize: 25,
     color: theme.colors.primary,
     fontWeight: "bold",
     paddingVertical: 12,
