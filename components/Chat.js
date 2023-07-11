@@ -3,11 +3,9 @@ import { View, Text, Pressable, SafeAreaView, FlatList } from "react-native";
 import { Feather } from "@expo/vector-icons";
 // import Modal from "../component/Modal";
 import ChatComponent from "./ChatComponent";
-// import socket from "../utils/socket";
+import socket from "../utils/socket";
 import { styles } from "../utils/styles";
-import { io } from "socket.io-client";
 
-const socket = io("http://localhost:3000", { transports: ["websocket"] });
 
 const Chat = () => {
 	const [visible, setVisible] = useState(false);
@@ -16,6 +14,7 @@ const Chat = () => {
 	useLayoutEffect(() => {
 		function fetchGroups() {
 			fetch("http://localhost:3000/api")
+                .then(console.log(socket.UID))
 				.then((res) => res.json())
 				.then((data) => setRooms(data))
 				.catch((err) => console.error(err));
