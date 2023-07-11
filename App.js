@@ -11,6 +11,7 @@ import LoadingPage from "./components/LoadingPage";
 
 const socket = io("http://172.10.5.90:443", { transports: ["websocket"] }); // 소켓 클라이언트 객체 생성 및 서버 주소 설정
 
+
 const Stack = createStackNavigator();
 export default class App extends React.Component {
   render() {
@@ -20,6 +21,7 @@ export default class App extends React.Component {
           screenOptions={{
             headerShown: false,
           }}
+
           initialRouteName="Loading"
         >
           <Stack.Screen
