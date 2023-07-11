@@ -19,9 +19,10 @@ const Login = ({ navigation }) => {
   const [id, setId] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = (UID) => {
+  const handleLogin = (UID, username) => {
     socket["UID"] = UID;
-  }
+    socket["username"] = username;
+  };
 
   const onClickLogin = async () => {
     try {
@@ -34,7 +35,7 @@ const Login = ({ navigation }) => {
           if (response.data.success) {
             // 서버에서 로그인 성공 응답을 받으면 홈 화면으로 리다이렉트
             //console.log(response.data.UID);
-            handleLogin(response.data.UID);
+            handleLogin(response.data.UID, response.data.username);
             //socket.emit("login", { UID: response.data.UID }); // 소켓의 username 설정
             navigation.navigate("Main");
           } else {
