@@ -66,11 +66,6 @@ const Signin = ({ navigation }) => {
     }
   };
 
-  const handleOptionChange = (value) => {
-    setSelectedOption(value);
-    console.log(selectedOption);
-  };
-
   return (
     <View style={styles.container}>
       <Image source={Logo} style={{ width: 150, height: 150 }} />
