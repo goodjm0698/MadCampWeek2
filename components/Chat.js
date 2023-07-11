@@ -6,13 +6,9 @@ import ChatComponent from "./ChatComponent";
 import socket from "../utils/socket";
 import { styles } from "../utils/styles";
 
-const socket = io("http://172.10.5.90:443", { transports: ["websocket"] });
-
-
 const Chat = () => {
   const [visible, setVisible] = useState(false);
   const [rooms, setRooms] = useState([]);
-
 
   useLayoutEffect(() => {
     function fetchGroups() {
@@ -23,7 +19,6 @@ const Chat = () => {
     }
     fetchGroups();
   }, []);
-
 
   useEffect(() => {
     socket.on("roomsList", (rooms) => {

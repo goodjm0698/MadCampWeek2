@@ -12,7 +12,7 @@ import ProfilePage from "./ProfilePage";
 import ChatPage from "./ChatPage";
 import ChatList from "./ChatListPage";
 import ProfileEdit from "./ProfileEditPage";
-import Chat from "./Chat"
+import Chat from "./Chat";
 
 const Tab = createBottomTabNavigator();
 const ProfileStack = createStackNavigator();
@@ -79,7 +79,7 @@ export default function Main() {
       />
       <Tab.Screen
         name="chat"
-        component={ChatNavigator}
+        component={Chat}
         options={{
           title: "채팅",
           tabBarIcon: ({ color, size }) => (
@@ -104,7 +104,7 @@ export default function Main() {
       />
       <Tab.Screen
         name="Profile"
-        component={Chat}
+        component={ProfileNavigator}
         options={{
           title: "프로필",
           tabBarIcon: ({ color, size }) => (

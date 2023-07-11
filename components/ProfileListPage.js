@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { ScrollView } from "react-native";
 import { ListItem, Avatar } from "react-native-elements";
+import { useFocusEffect } from "@react-navigation/native";
 import axios from "axios";
 
 //
@@ -25,17 +26,28 @@ const tagColors = {
 
 const ProfileList = ({ navigation }) => {
   const [profs, setProfs] = useState([]);
-  useEffect(() => {
-    axios
-      .get("http://172.10.5.90:443/profilelist")
-      .then((response) => {
-        setProfs(response.data);
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-  }, []);
-
+  // useEffect(() => {
+  //   axios
+  //     .get("http://172.10.5.90:443/profilelist")
+  //     .then((response) => {
+  //       setProfs(response.data);
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error:", error);
+  //     });
+  // }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      axios
+        .get("http://172.10.5.90:443/profilelist")
+        .then((response) => {
+          setProfs(response.data);
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    }, []) // UID가 변경될 때마다 useEffect를 다시 실행합니다.
+  );
   return (
     <ScrollView>
       {profs.map((user, i) => (
@@ -44,7 +56,11 @@ const ProfileList = ({ navigation }) => {
           bottomDivider
           onPress={() => navigation.navigate("ProfilePage", { user })}
         >
-          <Avatar source={{ uri: user.avatar_url }} />
+          <Avatar
+            source={{
+              uri: "https://cdn.pixabay.com/photo/2017/11/10/05/48/user-2935527_1280.png",
+            }}
+          />
           <ListItem.Content>
             <ListItem.Title
               style={{
@@ -52,7 +68,7 @@ const ProfileList = ({ navigation }) => {
                 fontWeight: "bold",
               }}
             >
-              {user.username}
+              {user.name}
             </ListItem.Title>
             <View style={styles.tagContainer}>
               {(user.tags || "").split(",").map((tag, index) => (

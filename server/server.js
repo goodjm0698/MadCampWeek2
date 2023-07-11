@@ -251,14 +251,16 @@ socketIO.on('connection', (socket) => {
     );
   })
 
-  socket.on('disconnect', () => {
+
+  socket.on("disconnect", () => {
     socket.disconnect();
-    console.log('🔥: A user disconnected');
+    console.log("🔥: A user disconnected");
   });
 });
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+
 
 let chatRooms = [
   {
@@ -300,15 +302,12 @@ let chatRooms = [
 ];
 
 
-
-
-
 // 유저가 프로젝트 탭에 들어오면, 프로젝트 리스트를 display해야 함
 
 app.get("/projects", (req, res) => {
   res.header("Access-Control-Allow-Origin", "*"); // 필요한건가?
   db.query(
-    "SELECT projects.*, users.username AS username, GROUP_CONCAT(projtags.tag) AS tags\
+    "SELECT projects.*, users.username AS username,users.name AS name, GROUP_CONCAT(projtags.tag) AS tags\
   FROM projects\
   LEFT JOIN projtags ON projects.PID = projtags.PID\
   LEFT JOIN users ON projects.UID = users.UID\
@@ -432,6 +431,48 @@ app.post("/signin", (req, res) => {
       }
     }
   });
+});
+
+app.post("/profileedit", (req, res) => {
+  const UID = req.body.UID;
+  const gender = req.body.gender;
+  const name = req.body.name;
+  const age = req.body.age;
+  const school = req.body.school;
+  const classNum = req.body.classNum;
+  const selectedTags = req.body.selectedTags;
+  console.log(UID, gender, age, name, school, classNum, selectedTags);
+  const tags = Object.entries(selectedTags)
+    .filter(([key, value]) => value)
+    .map(([key, value]) => key);
+  db.query(
+    "update users set gender = ?, age=?, school=?, class = ? where name = ?;",
+    [gender, age, school, classNum, name],
+    (err, res) => {
+      if (err) {
+        console.error("Failed to update user into MySQL:", err);
+        res.status(500).json({ error: "Failed to add todo" });
+        return;
+      } else {
+        db.query("delete from usertags where UID = ?;", [UID], (err, res) => {
+          if (!err) {
+            const tagsSql = tags.map(
+              (tag) =>
+                `INSERT INTO usertags (UID, tag) VALUES ('${UID}', '${tag}')`
+            );
+            console.log(tagsSql);
+            tagsSql.forEach((query) => {
+              db.query(query, (err, result, fields) => {
+                if (!err) {
+                }
+              });
+            });
+          }
+        });
+        console.log(tags);
+      }
+    }
+  );
 });
 
 app.get("/profilelist", (req, res) => {

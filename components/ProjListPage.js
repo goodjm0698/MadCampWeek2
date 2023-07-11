@@ -39,10 +39,15 @@ const ProjList = ({ navigation }) => {
       data={projs}
       renderItem={({ item }) => (
         <View style={styles.item}>
-          <TouchableOpacity onPress={() => navigation.navigate("ProjPost")}>
-            <Text style={styles.title}>{item.PID}</Text>
-            <Text>{item.info}</Text>
-            <Text>{item.username}</Text>
+          <TouchableOpacity
+            onPress={() => navigation.navigate("ProjPost", { item })}
+          >
+            <Text style={styles.title}>'{item.name}' 님의 프로젝트</Text>
+            <View style={{ width: 80 }}>
+              <Text numberOfLines={2} ellipsizeMode="tail">
+                {item.info}
+              </Text>
+            </View>
             {
               <View style={styles.tagContainer}>
                 {(item.tags || "").split(",").map((tag, index) => (
