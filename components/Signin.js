@@ -50,7 +50,7 @@ const Signin = ({ navigation }) => {
 
   const onClickSignin = async () => {
     try {
-      await axios.post("http://localhost:3000/signin", {
+      await axios.post("http://172.10.5.90:443/signin", {
         id: id,
         password: password,
         sex: sex,

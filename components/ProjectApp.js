@@ -8,7 +8,7 @@ const ProjectApp = () => {
 
   const addTodo = async () => {
     try {
-      await axios.post("http://localhost:3000/projects", { text: newTodo });
+      await axios.post("http://172.10.5.90:443/projects", { text: newTodo });
       setNewTodo("");
     } catch (error) {
       console.error(error);
@@ -17,7 +17,7 @@ const ProjectApp = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:3000/projects")
+      .get("http://172.10.5.90:443/projects")
       .then((response) => {
         setTodos(response.data);
       })

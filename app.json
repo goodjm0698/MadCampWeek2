@@ -29,7 +29,7 @@
     "extra": {
       "eas": {
         "projectId": "70497c39-c5db-48b3-9acc-066863afb418",
-        "proxyApiUrl": "http://localhost:3000"
+        "proxyApiUrl": "http://localhost:443"
       }
     }
   }

@@ -55,7 +55,7 @@ app.use(function (req, res, next) {
 });
 const socketIO = require("socket.io")(http, {
   cors: {
-    origin: "<http://localhost:3000>",
+    origin: "<http://172.10.5.90:443>",
   },
 });
 
@@ -195,6 +195,11 @@ app.post("/signin", (req, res) => {
     selectedValue,
     selectedTags
   );
+  const tags = Object.entries(selectedTags)
+    .filter(([key, value]) => value)
+    .map(([key, value]) => key);
+  console.log(tags);
+
   const sql = "select count(*) as result from users where username = ?;";
   db.query(sql, [username], (err, data) => {
     if (!err) {
@@ -202,13 +207,36 @@ app.post("/signin", (req, res) => {
         console.log("collison");
       } else {
         db.query(
-          "INSERT INTO users (username, PW) VALUES (?, ?);",
-          [username, password],
+          "INSERT INTO users (username, PW,name,gender,age,school,class) VALUES (?, ?,?,?,?,?,?);",
+          [username, password, name, sex, age, school, selectedValue],
           (err, res) => {
             if (err) {
               console.error("Failed to insert todo into MySQL:", err);
               res.status(500).json({ error: "Failed to add todo" });
               return;
+            } else {
+              console.log(tags);
+              db.query(
+                "select UID from users where username = ?;",
+                [username],
+                (error, data) => {
+                  if (!error) {
+                    console.log(data[0].UID);
+                    const tagsSql = tags.map(
+                      (tag) =>
+                        `INSERT INTO usertags (UID, tag) VALUES ('${data[0].UID}', '${tag}')`
+                    );
+                    console.log(tagsSql);
+                    tagsSql.forEach((query) => {
+                      db.query(query, (err, result, fields) => {
+                        if (!err) {
+                          console.log(result);
+                        }
+                      });
+                    });
+                  }
+                }
+              );
             }
           }
         );
@@ -235,13 +263,13 @@ app.get("/profilelist", (req, res) => {
 });
 
 app.get("/profile", (req, res) => {
-  const UID = 1;
+  const { UID } = req.query;
   db.query(
     "SELECT users.*, GROUP_CONCAT(usertags.tag) AS tags \
     FROM users \
     LEFT JOIN usertags ON users.UID = usertags.UID \
     WHERE users.UID = ? \
-    GROUP BY users.UID",
+    GROUP BY users.UID;",
     [UID],
     (err, results) => {
       if (err) {
@@ -251,7 +279,8 @@ app.get("/profile", (req, res) => {
       }
       // console.log(results);
       // console.log(results[0].tags.split(','));
-      res.json(results[0]);
+      res.json(results);
+      console.log(results);
     }
   );
 });
@@ -260,7 +289,7 @@ app.get("/api", (req, res) => {
   res.json(chatRooms);
 });
 
-const port = 3000;
+const port = 443;
 http.listen(port, () => {
   console.log(`Server is listening on port ${port}`);
 });

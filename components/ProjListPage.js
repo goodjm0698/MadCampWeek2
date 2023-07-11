@@ -25,7 +25,7 @@ const ProjList = ({ navigation }) => {
   const [projs, setProjs] = useState([]);
   useEffect(() => {
     axios
-      .get("http://localhost:3000/projects")
+      .get("http://172.10.5.90:443/projects")
       .then((response) => {
         setProjs(response.data);
       })
@@ -45,7 +45,7 @@ const ProjList = ({ navigation }) => {
             <Text>{item.username}</Text>
             {
               <View style={styles.tagContainer}>
-                {item.tags.split(",").map((tag, index) => (
+                {(item.tags || "").split(",").map((tag, index) => (
                   <Text
                     key={index}
                     style={[styles.tag, { backgroundColor: tagColors[tag] }]}
