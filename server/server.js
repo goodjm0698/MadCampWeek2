@@ -59,40 +59,40 @@ const socketIO = require("socket.io")(http, {
   },
 });
 
-socketIO.on('connection', (socket) => {
+socketIO.on("connection", (socket) => {
   console.log(`⚡: ${socket.id} user just connected!`);
 
   socket.on("createRoom", (name) => {
-		socket.join(name);
-		//chatRooms.unshift({ id: generateID(), name, messages: [] }); // db로 연결
-		socket.emit("roomsList", chatRooms);
-	});
+    socket.join(name);
+    //chatRooms.unshift({ id: generateID(), name, messages: [] }); // db로 연결
+    socket.emit("roomsList", chatRooms);
+  });
 
-	socket.on("findRoom", (id) => {
-		let result = chatRooms.filter((room) => room.id == id); // db query
-		socket.emit("foundRoom", result[0].messages);
-	});
+  socket.on("findRoom", (id) => {
+    let result = chatRooms.filter((room) => room.id == id); // db query
+    socket.emit("foundRoom", result[0].messages);
+  });
 
   socket.on("newMessage", (data) => {
-		// const { room_id, message, user, timestamp } = data;
-		// let result = chatRooms.filter((room) => room.id == room_id); // db query
-		// const newMessage = {
-		// 	id: room_id,
-		// 	text: message,
-		// 	user,
-		// 	time: `${timestamp.hour}:${timestamp.mins}`,
-		// };
-		console.log("New Message", data);
-		//socket.to(result[0].name).emit("roomMessage", newMessage);
-		//result[0].messages.push(newMessage);
+    // const { room_id, message, user, timestamp } = data;
+    // let result = chatRooms.filter((room) => room.id == room_id); // db query
+    // const newMessage = {
+    // 	id: room_id,
+    // 	text: message,
+    // 	user,
+    // 	time: `${timestamp.hour}:${timestamp.mins}`,
+    // };
+    console.log("New Message", data);
+    //socket.to(result[0].name).emit("roomMessage", newMessage);
+    //result[0].messages.push(newMessage);
 
-	  //socket.emit("roomsList", chatRooms);
-		//socket.emit("foundRoom", result[0].messages);
-	});
+    //socket.emit("roomsList", chatRooms);
+    //socket.emit("foundRoom", result[0].messages);
+  });
 
-  socket.on('disconnect', () => {
+  socket.on("disconnect", () => {
     socket.disconnect();
-    console.log('🔥: A user disconnected');
+    console.log("🔥: A user disconnected");
   });
 });
 
@@ -102,7 +102,7 @@ app.use(express.json());
 const db = mysql.createConnection({
   host: "127.0.0.1",
   user: "root",
-  password: "20200291",
+  password: "0000",
   database: "madmarket",
 });
 
@@ -119,7 +119,7 @@ db.connect((err) => {
 app.get("/projects", (req, res) => {
   res.header("Access-Control-Allow-Origin", "*"); // 필요한건가?
   db.query(
-    "SELECT projects.*, users.username AS username, GROUP_CONCAT(projtags.tag) AS tags\
+    "SELECT projects.*, users.username AS username,users.name AS name, GROUP_CONCAT(projtags.tag) AS tags\
   FROM projects\
   LEFT JOIN projtags ON projects.PID = projtags.PID\
   LEFT JOIN users ON projects.UID = users.UID\
@@ -243,6 +243,48 @@ app.post("/signin", (req, res) => {
       }
     }
   });
+});
+
+app.post("/profileedit", (req, res) => {
+  const UID = req.body.UID;
+  const gender = req.body.gender;
+  const name = req.body.name;
+  const age = req.body.age;
+  const school = req.body.school;
+  const classNum = req.body.classNum;
+  const selectedTags = req.body.selectedTags;
+  console.log(UID, gender, age, name, school, classNum, selectedTags);
+  const tags = Object.entries(selectedTags)
+    .filter(([key, value]) => value)
+    .map(([key, value]) => key);
+  db.query(
+    "update users set gender = ?, age=?, school=?, class = ? where name = ?;",
+    [gender, age, school, classNum, name],
+    (err, res) => {
+      if (err) {
+        console.error("Failed to update user into MySQL:", err);
+        res.status(500).json({ error: "Failed to add todo" });
+        return;
+      } else {
+        db.query("delete from usertags where UID = ?;", [UID], (err, res) => {
+          if (!err) {
+            const tagsSql = tags.map(
+              (tag) =>
+                `INSERT INTO usertags (UID, tag) VALUES ('${UID}', '${tag}')`
+            );
+            console.log(tagsSql);
+            tagsSql.forEach((query) => {
+              db.query(query, (err, result, fields) => {
+                if (!err) {
+                }
+              });
+            });
+          }
+        });
+        console.log(tags);
+      }
+    }
+  );
 });
 
 app.get("/profilelist", (req, res) => {

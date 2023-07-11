@@ -15,14 +15,15 @@ const tagColors = {
   게임: "#71269c",
 };
 
-const ProjPost = ({ navigation }) => {
+const ProjPost = ({ navigation, route }) => {
+  const { item } = route.params;
+
   return (
     <View style={styles.container}>
       <View>
-        <Text style={styles.title}>Title</Text>
-        <Text style={styles.author}>Author</Text>
+        <Text style={styles.title}>'{item.name}' 님의 프로젝트</Text>
         <View style={styles.tagContainer}>
-          {["열정", "백", "앱"].map((tag, index) => (
+          {(item.tags || "").split(",").map((tag, index) => (
             <View
               key={index}
               style={[styles.tag, { backgroundColor: tagColors[tag] }]}
@@ -33,7 +34,7 @@ const ProjPost = ({ navigation }) => {
         </View>
         <View style={styles.separator} />
         <View style={styles.contentContainer}>
-          <Text style={styles.content}>contents</Text>
+          <Text style={styles.content}>{item.info}</Text>
         </View>
       </View>
       <Button
@@ -84,10 +85,10 @@ const styles = StyleSheet.create({
   },
   tagText: {
     color: "#fff",
-    fontSize: 15,
+    fontSize: 12,
   },
   content: {
-    fontSize: 20,
+    fontSize: 15,
     marginBottom: 20,
   },
   contentContainer: {
@@ -95,6 +96,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     borderColor: "black",
     height: 200,
+    padding: 20,
     marginBottom: 10,
   },
   separator: {

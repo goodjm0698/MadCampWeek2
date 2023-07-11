@@ -4,15 +4,14 @@ import { Button } from "@rneui/themed";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import { ScrollView } from "react-native";
-import { ListItem, Avatar } from "react-native-elements";
+import { useFocusEffect } from "@react-navigation/native";
 import axios from "axios";
 
 const tagColors = {
   열정: "#FF5733",
-  공부: "#FF5733",
+  공부: "#0E0F37",
   프론트: "#C70039",
-  백: "#C70039",
+  백: "#0A3711",
   앱: "#900C3F",
   웹: "#FFC300",
   게임: "#71269c",
@@ -22,38 +21,39 @@ const ProfilePage = ({ navigation, route }) => {
   const [prof, setProf] = useState([]);
   const { user } = route.params;
   console.log(user.UID);
-  useEffect(() => {
-    axios
-      .get(
-        "http://172.10.5.90:443/profile",
-        { params: { UID: user.UID } },
-        { withCredentials: true }
-      )
-      .then((response) => {
-        setProf(response.data[0]);
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-  }, []);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      axios
+        .get(
+          "http://172.10.5.90:443/profile",
+          { params: { UID: user.UID } },
+          { withCredentials: true }
+        )
+        .then((response) => {
+          setProf(response.data[0]);
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    }, []) // UID가 변경될 때마다 useEffect를 다시 실행합니다.
+  );
+
   const profile = {
     name: "김재민",
     avatar:
-      "https://cdn.pixabay.com/photo/2023/06/18/04/57/crimson-collared-tanager-8071235_1280.jpg",
-    age: 22,
+      "https://cdn.pixabay.com/photo/2017/11/10/05/48/user-2935527_1280.png",
     gender: "Male",
     school: "Korea Univ.",
     class: "Class 1",
     tags: ["열정", "디자인", "UI", "프론트"],
   };
 
-  console.log(prof);
-
   return (
     <View style={styles.container}>
       <TouchableOpacity
         style={styles.editButton}
-        onPress={() => navigation.navigate("ProfileEdit")}
+        onPress={() => navigation.navigate("ProfileEdit", { prof })}
       >
         <FontAwesome name="pencil" size={25} color="#000" />
       </TouchableOpacity>
@@ -62,7 +62,7 @@ const ProfilePage = ({ navigation, route }) => {
       </View>
 
       <View style={styles.infoContainer}>
-        <Text style={styles.title}>{prof.username}</Text>
+        <Text style={styles.title}>{prof.name}</Text>
         <View style={styles.separator} />
         <View style={styles.tagContainer}>
           {(prof.tags || "").split(",").map((tag, index) => (
@@ -102,7 +102,7 @@ const ProfilePage = ({ navigation, route }) => {
             color="#000"
             style={{ marginHorizontal: 10 }}
           />
-          <Text style={styles.info}>School:{prof.school}</Text>
+          <Text style={styles.info}>School: {prof.school}</Text>
         </View>
         <View style={styles.separator} />
         <View style={{ flexDirection: "row" }}>
