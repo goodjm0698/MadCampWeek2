@@ -8,21 +8,17 @@ import { ScrollView } from "react-native";
 import { ListItem, Avatar } from "react-native-elements";
 import axios from "axios";
 
-
 const tagColors = {
   열정: "#FF5733",
+  공부: "#FF5733",
   프론트: "#C70039",
+  백: "#C70039",
   앱: "#900C3F",
-  디자인: "#581845",
-  UI: "#FFC300",
-  UX: "#FF5733",
-  백엔드: "#C70039",
-  데이터베이스: "#900C3F",
-  테스팅: "#581845",
-  디버깅: "#FFC300",
+  웹: "#FFC300",
+  게임: "#71269c",
 };
 
-const ProfilePage = () => {
+const ProfilePage = ({ navigation }) => {
   const [prof, setProf] = useState([]);
   useEffect(() => {
     axios
@@ -49,7 +45,7 @@ const ProfilePage = () => {
     <View style={styles.container}>
       <TouchableOpacity
         style={styles.editButton}
-        onPress={() => console.log("clicked")}
+        onPress={() => navigation.navigate("ProfileEdit")}
       >
         <FontAwesome name="pencil" size={25} color="#000" />
       </TouchableOpacity>
@@ -61,7 +57,7 @@ const ProfilePage = () => {
         <Text style={styles.title}>{prof.username}</Text>
         <View style={styles.separator} />
         <View style={styles.tagContainer}>
-          {(prof.tags||"").split(',').map((tag, index) => (
+          {(prof.tags || "").split(",").map((tag, index) => (
             <View
               style={[styles.tag, { backgroundColor: tagColors[tag] }]}
               key={index}

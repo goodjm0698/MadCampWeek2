@@ -4,27 +4,25 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Button } from "@rneui/themed";
 
 import axios from "axios";
+
 const tagColors = {
   열정: "#FF5733",
+  공부: "#0E0F37",
   프론트: "#C70039",
+  백: "#0A3711",
   앱: "#900C3F",
-  디자인: "#581845",
-  UI: "#FFC300",
-  UX: "#FF5733",
-  백엔드: "#C70039",
-  데이터베이스: "#900C3F",
-  테스팅: "#581845",
-  디버깅: "#FFC300",
+  웹: "#FFC300",
+  게임: "#71269c",
 };
 
-const ProjPost = () => {
+const ProjPost = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <View>
         <Text style={styles.title}>Title</Text>
         <Text style={styles.author}>Author</Text>
         <View style={styles.tagContainer}>
-          {["열정", "백엔드", "앱", "디자인"].map((tag, index) => (
+          {["열정", "백", "앱"].map((tag, index) => (
             <View
               key={index}
               style={[styles.tag, { backgroundColor: tagColors[tag] }]}
@@ -38,7 +36,11 @@ const ProjPost = () => {
           <Text style={styles.content}>contents</Text>
         </View>
       </View>
-      <Button color="warning" title="1대1 채팅방" />
+      <Button
+        color="warning"
+        title="1대1 채팅방"
+        onPress={() => navigation.navigate("ChatPage")}
+      />
     </View>
   );
 };
