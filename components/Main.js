@@ -79,7 +79,7 @@ export default function Main() {
       />
       <Tab.Screen
         name="chat"
-        component={Chat}
+        component={ChatNavigator}
         options={{
           title: "채팅",
           tabBarIcon: ({ color, size }) => (
