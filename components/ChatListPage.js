@@ -33,16 +33,20 @@ const tagColors = {
 
 const ChatList = ({ navigation }) => {
   const [rooms, setRooms] = useState([]);
-
+  console.log(socket.UID);
   useLayoutEffect(() => {
-		function fetchGroups() {
-			fetch("http://localhost:3000/api")
-				.then((res) => res.json())
-				.then((data) => setRooms(data))
-				.catch((err) => console.error(err));
-		}
-		fetchGroups();
-	}, []);
+		// function fetchGroups() {
+		// 	fetch("http://localhost:3000/api")
+		// 		.then((res) => res.json())
+		// 		.then((data) => setRooms(data))
+		// 		.catch((err) => console.error(err));
+		// }
+		// fetchGroups();
+    socket.emit("needroomsList", socket.UID);
+    socket.on("roomsList", (rooms) => {
+			setRooms(rooms);
+		});
+	}, [socket]);
 
 	useEffect(() => {
 		socket.on("roomsList", (rooms) => {
@@ -56,7 +60,7 @@ const ChatList = ({ navigation }) => {
         <ListItem
           key={i}
           bottomDivider
-          onPress={() => navigation.navigate("ChatPage")}
+          onPress={() => navigation.navigate("ChatPage", {room})}
         >
           {/* <Avatar source={{ uri: user.avatar_url }} /> */}
           <ListItem.Content>
@@ -66,7 +70,7 @@ const ChatList = ({ navigation }) => {
                 fontWeight: "bold",
               }}
             >
-              {room.name}
+              {room.id}
             </ListItem.Title>
             <ListItem.Subtitle>{room.messages[room.messages.length - 1].text}</ListItem.Subtitle>
           </ListItem.Content>
