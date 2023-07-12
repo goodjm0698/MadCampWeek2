@@ -25,14 +25,14 @@ app.use(function (req, res, next) {
 });
 const socketIO = require("socket.io")(http, {
   cors: {
-    origin: "<http://172.10.5.90:443>",
+    origin: "<http://localhost:3000>",
   },
 });
 
 const db = mysql.createConnection({
   host: "127.0.0.1",
   user: "root",
-  password: "0000",
+  password: "20200291",
   database: "madmarket",
 });
 
@@ -47,8 +47,8 @@ db.connect((err) => {
 socketIO.on("connection", (socket) => {
   console.log(`⚡: ${socket.id} user just connected!`);
 
-  socket.on("createRoom", () => {
-    socket.join(socket.UID);
+  socket.on("createRoom", (UIDs) => {
+    let chatroomId;
     //chatRooms.unshift({ id: generateID(), name, messages: [] }); // db로 연결
     db.query(
       "INSERT INTO chatroom (created_at) VALUES (CURRENT_TIMESTAMP)",
@@ -57,12 +57,55 @@ socketIO.on("connection", (socket) => {
           console.error("Failed to insert chatroom into MySQL:", err);
           return;
         }
+        chatroomId = result.insertId;
+        console.log("Chatroom ID:", chatroomId);
+        db.query(
+          "INSERT INTO chatroom_user (chatroom_id, user_id) VALUES (?, ?), (?, ?)", [chatroomId, UIDs[0], chatroomId, UIDs[1]],
+          (err, result) => {
+            if (err) {
+              console.error("Failed to insert chatroom into MySQL:", err);
+              return;
+            }
+          }
+        );
+        db.query(
+          "INSERT INTO chatmessage (content, sender_id, chatroom_id, created_at) VALUES (?, ?, ?, CURRENT_TIMESTAMP)", ["안녕하세요!", UIDs[0], chatroomId, UIDs[1]],
+          (err, result) => {
+            if (err) {
+              console.error("Failed to insert chatroom into MySQL:", err);
+              return;
+            }
+          }
+        );
+        socket.emit("newRoom", chatroomId);
       }
     );
-    socket.emit("roomsList", chatRooms);
+    //console.log(chatroomId);
+    
+  });
+
+  socket.on("wantRoomid", (UIDs)=> {
+    db.query("SELECT cu1.chatroom_id\
+    FROM chatroom_user cu1\
+    INNER JOIN chatroom_user cu2 ON cu1.chatroom_id = cu2.chatroom_id\
+    WHERE cu1.user_id = ? AND cu2.user_id = ?;",
+      [UIDs[0], UIDs[1]],
+      (err, result) => {
+        if (err) {
+          console.error("Failed to retrieve chatroom ID:", err);
+          return;
+        }
+    
+        // chatroom_id 결과를 확인합니다.
+        const chatroomId = result[0]?.chatroom_id;
+        socket.emit("Roomid", chatroomId);
+        
+      }
+    );
   });
 
   socket.on("findRoom", (id) => {
+    socket.join(id);
     //let result = chatRooms.filter((room) => room.id == id); // db query
     db.query(
       "SELECT DISTINCT chatroom.id AS chatroom_id, chatmessage.created_at AS chatmessage_created_at, chatmessage.id AS chat_id, chatmessage.content AS chat_content, users.username AS sender_username\
@@ -114,7 +157,7 @@ socketIO.on("connection", (socket) => {
         const filteredData = formattedData.filter(
           (item) => item.id === id.toString()
         );
-        console.log(filteredData);
+        //console.log(filteredData);
         socket.emit("foundRoom", filteredData[0].messages);
 
         //console.log("Just got the res", results);
@@ -122,8 +165,9 @@ socketIO.on("connection", (socket) => {
     );
   });
 
-  socket.on("newMessage", (data) => {
-    const { room_id, message, user, timestamp } = data;
+  socket.on("newMessage", (data) => { // db에 넣고, db에서 모든 메세지를 뽑음, 그리고 user가 들어가 있는 모든 방을 roomlist함.
+    const { room_id, message, user, _ } = data;
+    let timestamp;
     //let result = chatRooms.filter((room) => room.id == room_id); // db query
     // console.log("New Message", data);
     //socket.to(room_id).emit("roomMessage", newMessage);
@@ -135,9 +179,21 @@ socketIO.on("connection", (socket) => {
         if (err) {
           console.error("Failed to insert message into MySQL:", err);
           return;
-        }
+        }        
       }
     );
+    db.query(
+      "SELECT created_at FROM chatmessage ORDER BY created_at DESC LIMIT 1",
+      (err, res) => {
+        if (err) {
+          console.error("Failed to fetch message timestamp:", err);
+          return;
+        }
+        const timestam = res[0].created_at;
+        timestamp = timestam;
+        // 추가 처리
+      }
+    );    
     //JOIN chatroom_user ON chatroom.id = chatroom_user.chatroom_id\
 
     db.query(
@@ -152,7 +208,6 @@ socketIO.on("connection", (socket) => {
           return;
         } else {
           const formattedData = [];
-
           // chatroom_id로 그룹화하여 새로운 배열 형태로 변환
           const groupedData = {};
           results.forEach((row) => {
@@ -198,7 +253,7 @@ socketIO.on("connection", (socket) => {
               }
               //console.log(results);
               rooms = results.map((row) => row.chatroom_id);
-              //console.log(rooms.toString());
+              //console.log(rooms);
               const formattedData2 = formattedData.filter((item) =>
                 rooms.includes(parseInt(item.id))
               );
@@ -207,7 +262,8 @@ socketIO.on("connection", (socket) => {
             }
           );
 
-          //socket.to(room_id).emit("roomMessage", data);
+          socket.to(room_id).emit("roomMessage", { room_id, message, user, timestamp });
+          
           // const formattedData2 = formattedData.filter((item) => rooms.includes(item.id));
           // socket.emit("roomsList", formattedData2);
           const filteredData = formattedData.filter(
@@ -223,22 +279,22 @@ socketIO.on("connection", (socket) => {
 
   socket.on("needroomsList", (uid) => {
     db.query(
-      "SELECT DISTINCT chatroom.id AS chatroom_id, chatmessage.created_at AS chatmessage_created_at, chatmessage.id AS chat_id, chatmessage.content AS chat_content, users.username AS sender_username\
-      FROM chatroom\
-      JOIN chatmessage ON chatroom.id = chatmessage.chatroom_id\
-      JOIN users ON chatmessage.sender_id = users.UID\
-      WHERE chatroom.id IN (\
-        SELECT chatroom_id FROM chatroom_user WHERE user_id = ?\
-      )\
+      "SELECT DISTINCT chatroom.id AS chatroom_id, chatmessage.created_at AS chatmessage_created_at, chatmessage.id AS chat_id, chatmessage.content AS chat_content, users.name AS sender_name, (SELECT GROUP_CONCAT(users.name) FROM chatroom_user JOIN users ON chatroom_user.user_id = users.UID WHERE chatroom_user.chatroom_id = chatroom.id AND chatroom_user.user_id != ?) AS room_users \
+      FROM chatroom \
+      JOIN chatmessage ON chatroom.id = chatmessage.chatroom_id \
+      JOIN users ON chatmessage.sender_id = users.UID \
+      WHERE chatroom.id IN ( \
+        SELECT chatroom_id FROM chatroom_user WHERE user_id = ? \
+      ) \
       ORDER BY chatmessage_created_at",
-      [uid],
+      [uid, uid],
       (err, results) => {
         if (err) {
           console.error("Failed to insert message into MySQL:", err);
           return;
         } else {
           const formattedData = [];
-
+    
           // chatroom_id로 그룹화하여 새로운 배열 형태로 변환
           const groupedData = {};
           results.forEach((row) => {
@@ -247,37 +303,38 @@ socketIO.on("connection", (socket) => {
               chatmessage_created_at,
               chat_id,
               chat_content,
-              sender_username,
+              sender_name,
+              room_users,
             } = row;
-
+    
             if (!groupedData[chatroom_id]) {
               // chatroom_id에 대한 항목이 없으면 새로 생성
               groupedData[chatroom_id] = {
                 id: chatroom_id.toString(),
+                name: room_users,
                 messages: [],
               };
             }
-
+    
             // messages 배열에 새로운 메시지 항목 추가
             groupedData[chatroom_id].messages.push({
               id: chat_id.toString(),
               text: chat_content,
-              time: chatmessage_created_at.toString(), // 예시에서는 문자열로 변환했으나, 실제로는 날짜 형식으로 변환해야 할 수도 있습니다.
-              user: sender_username,
+              time: chatmessage_created_at.toString(),
+              user: sender_name,
             });
           });
-
+    
           // 변환된 데이터를 formattedData에 추가
           for (const chatroom_id in groupedData) {
             const chatroom = groupedData[chatroom_id];
             formattedData.push(chatroom);
           }
-
-          console.log(formattedData);
           socket.emit("roomsList", formattedData);
         }
       }
     );
+    
   });
 
   socket.on("disconnect", () => {
@@ -635,7 +692,7 @@ app.get("/api", (req, res) => {
   );
 });
 
-const port = 443;
+const port = 3000;
 http.listen(port, () => {
   console.log(`Server is listening on port ${port}`);
 });

@@ -70,7 +70,7 @@ const ProfileEdit = ({ navigation, route }) => {
 
   const onClickSave = async () => {
     try {
-      await axios.post("http://172.10.5.90:443/profileedit", {
+      await axios.post("http://localhost:3000/profileedit", {
         UID: prof.UID,
         name: name,
         gender: gender,
