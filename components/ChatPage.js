@@ -8,7 +8,7 @@ import MessageComponent from "./MessageComponent";
 const ChatPage = ({ route, navigation }) => {
   const { room } = route.params;
   const room_id = parseInt(room.id);
-  console.log(room_id);
+  console.log(room);
   const [chatMessages, setChatMessages] = useState([
     {
       id: "1",

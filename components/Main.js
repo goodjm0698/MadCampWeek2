@@ -41,6 +41,7 @@ function ProjNavigator() {
     <ProjStack.Navigator>
       <ProjStack.Screen name="ProjList" component={ProjList} />
       <ProjStack.Screen name="ProjPost" component={ProjPost} />
+      <ProjStack.Screen name="ChatPage" component={ChatPage} />
     </ProjStack.Navigator>
   );
 }
