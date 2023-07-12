@@ -39,7 +39,7 @@ const ProfileList = ({ navigation }) => {
   useFocusEffect(
     React.useCallback(() => {
       axios
-        .get("http://172.10.5.90:443/profilelist")
+        .get("http://localhost:3000/profilelist")
         .then((response) => {
           setProfs(response.data);
         })

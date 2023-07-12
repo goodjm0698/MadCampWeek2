@@ -26,7 +26,7 @@ const ProfilePage = ({ navigation, route }) => {
     React.useCallback(() => {
       axios
         .get(
-          "http://172.10.5.90:443/profile",
+          "http://localhost:3000/profile",
           { params: { UID: user.UID } },
           { withCredentials: true }
         )

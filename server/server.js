@@ -25,14 +25,14 @@ app.use(function (req, res, next) {
 });
 const socketIO = require("socket.io")(http, {
   cors: {
-    origin: "<http://172.10.5.90:443>",
+    origin: "<http://localhost:3000>",
   },
 });
 
 const db = mysql.createConnection({
   host: "127.0.0.1",
   user: "root",
-  password: "0000",
+  password: "20200291",
   database: "madmarket",
 });
 
@@ -63,6 +63,7 @@ socketIO.on("connection", (socket) => {
   });
 
   socket.on("findRoom", (id) => {
+    socket.join(id);
     //let result = chatRooms.filter((room) => room.id == id); // db query
     db.query(
       "SELECT DISTINCT chatroom.id AS chatroom_id, chatmessage.created_at AS chatmessage_created_at, chatmessage.id AS chat_id, chatmessage.content AS chat_content, users.username AS sender_username\
@@ -114,7 +115,7 @@ socketIO.on("connection", (socket) => {
         const filteredData = formattedData.filter(
           (item) => item.id === id.toString()
         );
-        console.log(filteredData);
+        //console.log(filteredData);
         socket.emit("foundRoom", filteredData[0].messages);
 
         //console.log("Just got the res", results);
@@ -122,8 +123,9 @@ socketIO.on("connection", (socket) => {
     );
   });
 
-  socket.on("newMessage", (data) => {
-    const { room_id, message, user, timestamp } = data;
+  socket.on("newMessage", (data) => { // db에 넣고, db에서 모든 메세지를 뽑음, 그리고 user가 들어가 있는 모든 방을 roomlist함.
+    const { room_id, message, user, _ } = data;
+    let timestamp;
     //let result = chatRooms.filter((room) => room.id == room_id); // db query
     // console.log("New Message", data);
     //socket.to(room_id).emit("roomMessage", newMessage);
@@ -135,9 +137,23 @@ socketIO.on("connection", (socket) => {
         if (err) {
           console.error("Failed to insert message into MySQL:", err);
           return;
-        }
+        }        
       }
     );
+    db.query(
+      "SELECT created_at FROM chatmessage ORDER BY created_at DESC LIMIT 1",
+      (err, res) => {
+        if (err) {
+          console.error("Failed to fetch message timestamp:", err);
+          return;
+        }
+        console.log(res);
+        const timestam = res[0].created_at;
+        timestamp = timestam;
+        console.log(timestamp);
+        // 추가 처리
+      }
+    );    
     //JOIN chatroom_user ON chatroom.id = chatroom_user.chatroom_id\
 
     db.query(
@@ -198,7 +214,7 @@ socketIO.on("connection", (socket) => {
               }
               //console.log(results);
               rooms = results.map((row) => row.chatroom_id);
-              //console.log(rooms.toString());
+              //console.log(rooms);
               const formattedData2 = formattedData.filter((item) =>
                 rooms.includes(parseInt(item.id))
               );
@@ -207,7 +223,8 @@ socketIO.on("connection", (socket) => {
             }
           );
 
-          //socket.to(room_id).emit("roomMessage", data);
+          socket.to(room_id).emit("roomMessage", { room_id, message, user, timestamp });
+          
           // const formattedData2 = formattedData.filter((item) => rooms.includes(item.id));
           // socket.emit("roomsList", formattedData2);
           const filteredData = formattedData.filter(
@@ -273,7 +290,7 @@ socketIO.on("connection", (socket) => {
             formattedData.push(chatroom);
           }
 
-          console.log(formattedData);
+          //console.log(formattedData);
           socket.emit("roomsList", formattedData);
         }
       }
@@ -599,7 +616,7 @@ app.get("/api", (req, res) => {
   );
 });
 
-const port = 443;
+const port = 3000;
 http.listen(port, () => {
   console.log(`Server is listening on port ${port}`);
 });

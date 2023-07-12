@@ -25,7 +25,7 @@ const ProjList = ({ navigation }) => {
   const [projs, setProjs] = useState([]);
   useEffect(() => {
     axios
-      .get("http://172.10.5.90:443/projects")
+      .get("http://localhost:3000/projects")
       .then((response) => {
         setProjs(response.data);
       })
