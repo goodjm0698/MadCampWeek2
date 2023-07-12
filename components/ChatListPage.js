@@ -11,6 +11,7 @@ import { ScrollView } from "react-native";
 import { ListItem, Avatar } from "react-native-elements";
 import axios from "axios";
 import socket from "../utils/socket";
+import { useFocusEffect } from '@react-navigation/native';
 
 const users = [
   {
@@ -33,6 +34,10 @@ const tagColors = {
 
 const ChatList = ({ navigation }) => {
   const [rooms, setRooms] = useState([]);
+
+  socket.on("roomsList", (rooms) => {
+    setRooms(rooms);
+  });
   console.log(socket.UID);
   useLayoutEffect(() => {
 		// function fetchGroups() {
@@ -48,11 +53,24 @@ const ChatList = ({ navigation }) => {
 		});
 	}, [socket]);
 
-	useEffect(() => {
-		socket.on("roomsList", (rooms) => {
-			setRooms(rooms);
-		});
-	}, [socket]);
+	// useEffect(() => {
+  //   console.log("now");
+	// 	socket.on("roomsList", (rooms) => {
+	// 		setRooms(rooms);
+	// 	});
+	// }, [socket]);
+  useFocusEffect(
+    React.useCallback(() => {
+      console.log("now");
+      socket.emit("needroomsList", socket.UID);
+      socket.on("roomsList", (rooms) => {
+        setRooms(rooms);
+        console.log("?");
+      });
+    }, [])
+  );
+
+  
 
   return (
     <ScrollView>

@@ -4,7 +4,24 @@ import { Ionicons } from "@expo/vector-icons";
 import { styles } from "../utils/styles";
 
 export default function MessageComponent({ item, user }) {
-  const status = item.user !== user;
+const status = item.user !== user;
+  
+const dateString = item.time;
+
+// 문자열을 Date 객체로 변환
+const date = new Date(dateString);
+
+// 날짜, 시간, 분, 초를 추출
+const year = date.getFullYear();
+const month = date.getMonth() + 1; // 월은 0부터 시작하므로 1을 더해줍니다.
+const day = date.getDate();
+const hours = date.getHours();
+const minutes = date.getMinutes();
+const seconds = date.getSeconds();
+
+// 출력 형식에 맞게 조합
+const formattedDate = `${year}-${month}-${day}`;
+const formattedTime = `${hours}:${minutes}:${seconds}`;
 
   return (
     <View>
@@ -32,7 +49,7 @@ export default function MessageComponent({ item, user }) {
             <Text>{item.text}</Text>
           </View>
         </View>
-        <Text style={{ marginLeft: 40 }}>{item.time}</Text>
+        <Text style={{ marginLeft: 40 }}>{`${formattedDate} ${formattedTime}`}</Text>
       </View>
     </View>
   );

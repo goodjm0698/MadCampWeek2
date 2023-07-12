@@ -32,17 +32,15 @@ const ChatPage = ({ route, navigation }) => {
     const { room_id, message, user, timestamp } = data;
 
     // 현재 화면에 표시된 채팅방의 ID와 일치하는 경우에만 메시지를 업데이트합니다
-    if (room_id === route.params.room.id) {
       setChatMessages((prevMessages) => [
         ...prevMessages,
         {
-          id: generateID(),
+          id: room_id,
           text: message,
           time: timestamp,
           user: user,
         },
-      ]);
-    }
+      ]);    
   };
 
   const handleNewMessage = () => {
@@ -69,8 +67,8 @@ const ChatPage = ({ route, navigation }) => {
       timestamp: { hour, mins },
     });
     setMessage("");
-    console.log("refresh");
   };
+  
 
   useLayoutEffect(() => {
     socket.emit("findRoom", room_id);
@@ -79,6 +77,8 @@ const ChatPage = ({ route, navigation }) => {
 
   useEffect(() => {
     socket.on("foundRoom", (roomChats) => setChatMessages(roomChats));
+    socket.on("roomMessage", handleRoomMessage);
+    //console.log("hit");
   }, [socket]);
 
   return (
