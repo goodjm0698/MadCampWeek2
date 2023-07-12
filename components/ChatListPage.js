@@ -88,7 +88,7 @@ const ChatList = ({ navigation }) => {
                 fontWeight: "bold",
               }}
             >
-              {room.id}
+              {room.name}
             </ListItem.Title>
             <ListItem.Subtitle>{room.messages[room.messages.length - 1].text}</ListItem.Subtitle>
           </ListItem.Content>

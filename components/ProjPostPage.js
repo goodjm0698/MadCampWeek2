@@ -4,6 +4,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Button } from "@rneui/themed";
 
 import axios from "axios";
+import socket from "../utils/socket";
 
 const tagColors = {
   열정: "#FF5733",
@@ -17,7 +18,37 @@ const tagColors = {
 
 const ProjPost = ({ navigation, route }) => {
   const { item } = route.params;
+  console.log(item);
+  let room = {id: null, name: item.name, messages: []};
+  console.log(room);
+  useEffect(()=>{
+    console.log(socket.UID, item.UID);
+  },[]);
 
+  const handleChatRoom = () => {
+    socket.emit("wantRoomid", [socket.UID, item.UID]);
+    socket.off("Roomid"); // 기존에 등록된 "Roomid" 이벤트 리스너 제거
+    socket.off("newRoom"); // 기존에 등록된 "newRoom" 이벤트 리스너 제거
+    socket.off("foundRoom");
+    socket.on("Roomid", (id)=>{
+      console.log(id);
+      if (id == undefined){
+        console.log("noroom");
+        socket.emit("createRoom", [socket.UID, item.UID]);
+        socket.on("newRoom", (id) =>{
+          console.log(id);
+          room.id = id;
+        })
+      }
+      else{
+        room.id = id;
+        socket.emit("findRoom", [id]);
+        socket.on("foundRoom", (message)=>{
+          room.messages = message;
+        });
+      }
+    });
+  }
   return (
     <View style={styles.container}>
       <View>
@@ -40,7 +71,9 @@ const ProjPost = ({ navigation, route }) => {
       <Button
         color="warning"
         title="1대1 채팅방"
-        onPress={() => navigation.navigate("ChatPage")}
+        onPress={()=>{handleChatRoom(); setTimeout(() => {
+          navigation.navigate("ChatPage", {room});
+        }, 500);}}
       />
     </View>
   );

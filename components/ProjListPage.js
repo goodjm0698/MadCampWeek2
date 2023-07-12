@@ -34,6 +34,7 @@ const ProjList = ({ navigation }) => {
       });
   }, []);
 
+
   return (
     <FlatList
       data={projs}
