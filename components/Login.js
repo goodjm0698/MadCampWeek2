@@ -37,7 +37,11 @@ const Login = ({ navigation }) => {
             //console.log(response.data.UID);
             handleLogin(response.data.UID, response.data.username);
             //socket.emit("login", { UID: response.data.UID }); // 소켓의 username 설정
-            navigation.navigate("Main");
+            //navigation.navigate("Main");
+            navigation.reset({
+              index: 0,
+              routes: [{ name: "Main" }],
+            });
           } else {
             // 로그인 실패, 에러 메시지 표시
             alert("Invalid username or password");

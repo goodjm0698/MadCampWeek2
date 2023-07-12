@@ -6,6 +6,8 @@ import {
   Text,
   TouchableOpacity,
   TextInput,
+  KeyboardAvoidingView,
+  ScrollView,
 } from "react-native";
 import { Button } from "@rneui/themed";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
@@ -84,7 +86,7 @@ const ProfileEdit = ({ navigation, route }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <View style={styles.imageContainer}>
         <Image style={styles.image} source={{ uri: profile.avatar }} />
       </View>
@@ -92,16 +94,6 @@ const ProfileEdit = ({ navigation, route }) => {
       <View style={styles.infoContainer}>
         <Text style={styles.title}>{name}</Text>
         <View style={styles.separator} />
-        {/* <View style={styles.tagContainer}>
-          {tags.map((tag, index) => (
-            <View
-              style={[styles.tag, { backgroundColor: tagColors[tag] }]}
-              key={index}
-            >
-              <Text style={styles.tagText}>{tag}</Text>
-            </View>
-          ))}
-        </View> */}
         <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
           {Object.keys(selectedTags).map((tag) => (
             <TouchableOpacity
@@ -181,11 +173,11 @@ const ProfileEdit = ({ navigation, route }) => {
         onPress={() => {
           onClickSave();
           setTimeout(() => {
-            navigation.navigate("ProfileList");
+            navigation.goBack();
           }, 500);
         }}
       />
-    </View>
+    </ScrollView>
   );
 };
 
@@ -213,6 +205,7 @@ const styles = StyleSheet.create({
   infoContainer: {
     flex: 2,
     paddingHorizontal: 20,
+    marginBottom: 45,
   },
   title: {
     fontSize: 24,

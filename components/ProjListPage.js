@@ -6,10 +6,12 @@ import {
   Text,
   SafeAreaView,
   FlatList,
+  Button,
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-
+import { useFocusEffect } from "@react-navigation/native";
 import axios from "axios";
+import socket from "../utils/socket";
 
 const tagColors = {
   열정: "#FF5733",
@@ -23,50 +25,72 @@ const tagColors = {
 
 const ProjList = ({ navigation }) => {
   const [projs, setProjs] = useState([]);
-  useEffect(() => {
-    axios
-      .get("http://localhost:3000/projects")
-      .then((response) => {
-        setProjs(response.data);
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-  }, []);
+  const user = { UID: socket.UID, username: socket.username };
+  // useEffect(() => {
+  //   axios
+  //     .get("http://172.10.5.90:443/projects")
+  //     .then((response) => {
+  //       setProjs(response.data);
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error:", error);
+  //     });
+  // }, []);
 
-
+  useFocusEffect(
+    React.useCallback(() => {
+      axios
+        .get("http://172.10.5.90:443/projects")
+        .then((response) => {
+          setProjs(response.data);
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    }, []) // UID가 변경될 때마다 useEffect를 다시 실행합니다.
+  );
   return (
-    <FlatList
-      data={projs}
-      renderItem={({ item }) => (
-        <View style={styles.item}>
-          <TouchableOpacity
-            onPress={() => navigation.navigate("ProjPost", { item })}
-          >
-            <Text style={styles.title}>'{item.name}' 님의 프로젝트</Text>
-            <View style={{ width: 80 }}>
-              <Text numberOfLines={2} ellipsizeMode="tail">
-                {item.info}
-              </Text>
-            </View>
-            {
-              <View style={styles.tagContainer}>
-                {(item.tags || "").split(",").map((tag, index) => (
-                  <Text
-                    key={index}
-                    style={[styles.tag, { backgroundColor: tagColors[tag] }]}
-                  >
-                    {tag}
-                  </Text>
-                ))}
+    <>
+      <Button
+        title="Add Project"
+        onPress={() =>
+          navigation.navigate("ProjAdd", {
+            user,
+          })
+        }
+      />
+      <FlatList
+        data={projs}
+        renderItem={({ item }) => (
+          <View style={styles.item}>
+            <TouchableOpacity
+              onPress={() => navigation.navigate("ProjPost", { item })}
+            >
+              <Text style={styles.title}>'{item.name}' 님의 프로젝트</Text>
+              <View style={{ width: 80 }}>
+                <Text numberOfLines={2} ellipsizeMode="tail">
+                  {item.info}
+                </Text>
               </View>
-            }
-          </TouchableOpacity>
-        </View>
-      )}
-      keyExtractor={(item) => item.id}
-      numColumns={2} // 한 줄에 두 개의 항목이 표시되도록 설정
-    />
+              {
+                <View style={styles.tagContainer}>
+                  {(item.tags || "").split(",").map((tag, index) => (
+                    <Text
+                      key={index}
+                      style={[styles.tag, { backgroundColor: tagColors[tag] }]}
+                    >
+                      {tag}
+                    </Text>
+                  ))}
+                </View>
+              }
+            </TouchableOpacity>
+          </View>
+        )}
+        keyExtractor={(item) => item.id}
+        numColumns={2} // 한 줄에 두 개의 항목이 표시되도록 설정
+      />
+    </>
   );
 };
 
