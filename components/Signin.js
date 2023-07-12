@@ -166,7 +166,13 @@ const Signin = ({ navigation }) => {
           marginVertical: 10, // 버튼 사이 간격
         }}
         title="회원 가입"
-        onPress={onClickSignin}
+        onPress={() => {
+          onClickSignin();
+          setTimeout(() => {
+            console.log("signin");
+            navigation.goBack();
+          }, 500);
+        }}
       />
     </View>
   );

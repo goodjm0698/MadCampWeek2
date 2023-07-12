@@ -1,6 +1,5 @@
 import React, { Component, useState, useEffect } from "react";
 import { View, Text, StyleSheet } from "react-native";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Button } from "@rneui/themed";
 
 import axios from "axios";

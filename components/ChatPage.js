@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useState, useEffect } from "react";
+import React, { useLayoutEffect, useState, useEffect, useRef } from "react";
 import { View, TextInput, Text, FlatList, Pressable } from "react-native";
 import ChatComponent from "./ChatComponent";
 import { styles } from "../utils/styles";
@@ -81,6 +81,15 @@ const ChatPage = ({ route, navigation }) => {
     socket.on("foundRoom", (roomChats) => setChatMessages(roomChats));
   }, [socket]);
 
+  const flatListRef = useRef();
+  useEffect(() => {
+    if (flatListRef.current) {
+      setTimeout(() => {
+        flatListRef.current.scrollToEnd({ animated: true });
+      }, 200);
+    }
+  }, [chatMessages]);
+
   return (
     <View style={styles.messagingscreen}>
       <View
@@ -91,6 +100,7 @@ const ChatPage = ({ route, navigation }) => {
       >
         {chatMessages[0] ? (
           <FlatList
+            ref={flatListRef}
             data={chatMessages}
             renderItem={({ item }) => (
               <MessageComponent item={item} user={userName} />

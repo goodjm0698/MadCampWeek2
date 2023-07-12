@@ -12,7 +12,7 @@ import ProfilePage from "./ProfilePage";
 import ChatPage from "./ChatPage";
 import ChatList from "./ChatListPage";
 import ProfileEdit from "./ProfileEditPage";
-import Chat from "./Chat";
+import ProjAdd from "./ProjAddPage";
 
 const Tab = createBottomTabNavigator();
 const ProfileStack = createStackNavigator();
@@ -41,6 +41,7 @@ function ProjNavigator() {
     <ProjStack.Navigator>
       <ProjStack.Screen name="ProjList" component={ProjList} />
       <ProjStack.Screen name="ProjPost" component={ProjPost} />
+      <ProjStack.Screen name="ProjAdd" component={ProjAdd} />
     </ProjStack.Navigator>
   );
 }

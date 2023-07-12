@@ -351,21 +351,57 @@ app.get("/projects", (req, res) => {
 });
 
 app.post("/projects", (req, res) => {
-  const { text } = req.body;
-  if (!text) {
-    res.status(440).json({ error: "Text field is required" });
-    return;
-  }
+  const selectedTags = req.body.selectedTags;
+  const name = req.body.name;
+  const UID = req.body.UID;
+  const info = req.body.info;
+
+  const tags = Object.entries(selectedTags)
+    .filter(([key, value]) => value)
+    .map(([key, value]) => key);
+
   db.query(
-    "INSERT INTO projects (CreatorID, project_info) VALUES (1,?)",
-    [text],
+    "INSERT INTO projects (UID, info) VALUES (?,?);",
+    [UID, info],
     (err, result) => {
       if (err) {
         console.error("Failed to insert todo into MySQL:", err);
         res.status(500).json({ error: "Failed to add todo" });
         return;
       }
-      res.json({ id: result.insertId, text });
+      res.json({ id: result.insertId, info });
+      db.query(
+        "select PID from projects where UID = ?;",
+        [UID],
+        (error, data) => {
+          if (!error) {
+            console.log(data[0].PID);
+            const tagsSql = tags.map(
+              (tag) =>
+                `INSERT INTO projtags (PID, tag) VALUES ('${data[0].PID}', '${tag}')`
+            );
+            console.log(tagsSql);
+            tagsSql.forEach((query) => {
+              db.query(query, (err, result, fields) => {
+                if (!err) {
+                  console.log("input");
+                }
+              });
+            });
+          }
+        }
+      );
+      const tagsSql = tags.map(
+        (tag) =>
+          `INSERT INTO projecttags (PID, tag) VALUES ('${UID}', '${tag}')`
+      );
+      console.log(tagsSql);
+      tagsSql.forEach((query) => {
+        db.query(query, (err, result, fields) => {
+          if (!err) {
+          }
+        });
+      });
     }
   );
 });
