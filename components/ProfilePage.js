@@ -6,6 +6,7 @@ import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { useFocusEffect } from "@react-navigation/native";
 import axios from "axios";
+import socket from "../utils/socket";
 
 const tagColors = {
   열정: "#FF5733",
@@ -21,7 +22,32 @@ const ProfilePage = ({ navigation, route }) => {
   const [prof, setProf] = useState([]);
   const { user } = route.params;
   console.log(user.UID);
+  let room = {id: null, name: item.name, messages: []};
 
+  const handleChatRoom = () => {
+    socket.emit("wantRoomid", [socket.UID, user.UID]);
+    socket.off("Roomid"); // 기존에 등록된 "Roomid" 이벤트 리스너 제거
+    socket.off("newRoom"); // 기존에 등록된 "newRoom" 이벤트 리스너 제거
+    socket.off("foundRoom");
+    socket.on("Roomid", (id)=>{
+      console.log(id);
+      if (id == undefined){
+        console.log("noroom");
+        socket.emit("createRoom", [socket.UID, user.UID]);
+        socket.on("newRoom", (id) =>{
+          console.log(id);
+          room.id = id;
+        })
+      }
+      else{
+        room.id = id;
+        socket.emit("findRoom", [id]);
+        socket.on("foundRoom", (message)=>{
+          room.messages = message;
+        });
+      }
+    });
+  }
   useFocusEffect(
     React.useCallback(() => {
       axios
@@ -53,7 +79,9 @@ const ProfilePage = ({ navigation, route }) => {
     <View style={styles.container}>
       <TouchableOpacity
         style={styles.editButton}
-        onPress={() => navigation.navigate("ProfileEdit", { prof })}
+        onPress={()=>{handleChatRoom(); setTimeout(() => {
+          navigation.navigate("ChatPage", {room});
+        }, 500);}}
       >
         <FontAwesome name="pencil" size={25} color="#000" />
       </TouchableOpacity>
